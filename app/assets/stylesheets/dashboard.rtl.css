@@ -167,14 +167,14 @@ sup {
 }
 
 a {
-  color: #008000;
+  color: #467fcf;
   text-decoration: none;
   background-color: transparent;
   -webkit-text-decoration-skip: objects;
 }
 
 a:hover {
-  color: #299f45;
+  color: #295a9f;
   text-decoration: underline;
 }
 
@@ -9903,7 +9903,7 @@ a {
 
 h1 a, h2 a, h3 a, h4 a, h5 a, h6 a,
 .h1 a, .h2 a, .h3 a, .h4 a, .h5 a, .h6 a {
-  /* color: inherit;*/
+  color: inherit;
 }
 
 strong,

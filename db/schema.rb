@@ -83,18 +83,6 @@ ActiveRecord::Schema.define(version: 20190109135027) do
 
   add_index "categories", ["uuid"], name: "index_categories_on_uuid", unique: true, using: :btree
 
-  create_table "categorizations", force: :cascade do |t|
-    t.string   "category_id",      limit: 255
-    t.string   "advertisement_id", limit: 255
-    t.datetime "created_at",                   null: false
-    t.datetime "updated_at",                   null: false
-    t.string   "uuid",             limit: 255
-  end
-
-  add_index "categorizations", ["advertisement_id"], name: "index_categorizations_on_advertisement_id", using: :btree
-  add_index "categorizations", ["category_id"], name: "index_categorizations_on_category_id", using: :btree
-  add_index "categorizations", ["uuid"], name: "index_categorizations_on_uuid", unique: true, using: :btree
-
   create_table "companies", force: :cascade do |t|
     t.string   "name",             limit: 255
     t.string   "phone_number",     limit: 255

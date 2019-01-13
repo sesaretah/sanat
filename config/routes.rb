@@ -34,6 +34,10 @@ Rails.application.routes.draw do
 
   get '/uploads/remoted/:id', to: "uploads#remoted"
 
+  get '/api/advertisements', to: "api#advertisements"
+  get '/api/login', to: "api#login"
+
+  post '/api/sign_up', to: "api#sign_up"
 
 
 end

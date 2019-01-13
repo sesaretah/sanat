@@ -1,75 +1,25 @@
-<% @uploads = Upload.where(uploadable_type: 'Slide', attachment_type: 'slider')%>
-<% if !@uploads.blank?%>
 <div class="row">
-  <div class="col-md-12">
-    <div class="card p-0">
-      <div class="card-body p-0" style="padding-bottom: 0px !important;">
-        <div id="carousel-indicators" class="carousel slide" data-ride="carousel">
-          <ol class="carousel-indicators">
-            <%@i = 0%>
-            <% for upload in @uploads%>
-            <li data-target="#carousel-indicators" data-slide-to="<%=@i%>" class="<% if upload.id == @uploads.first.id%>active<%end%>"></li>
-            <% @i += 1%>
-            <%end%>
-          </ol>
-          <div class="carousel-inner">
-
-            <% for upload in @uploads%>
-            <div class="carousel-item <% if upload.id == @uploads.first.id%>active<%end%>">
-              <img class="d-block w-100" alt="" src="<%= upload.attachment(:extra)%>" data-holder-rendered="true">
-            </div>
-            <%end%>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-<%end%>
-
-
-
-<h5><%=t :news_and_blogs%></h5>
-<hr class="mt-2 mb-3"/>
-<div class="card">
-  <div class="card-body">
-    <% for blog in @blogs.order('created_at desc')%>
-    <div class="row">
-      <div class="col-md-12 blogShort mt-3">
-        <h4><%= link_to blog.title, blog%></h4>
-        <article>
-          <p>
-            <%= truncate(blog.abstract, length: 250)%>
-          </p>
-        </article>
-        <%= link_to blog, class: "btn btn-secondary pull-left mb-2" do%>
-        <%=t :read_more%>
-        <%end%>
-      </div>
+<div class="col-md-2">
+  <h5><%=t :categories%></h5>
+  <hr class="mt-2 mb-3"/>
+  <div class="row row-cards row-deck">
+    <% for category in @categories%>
+    <div class="col-sm-12 col-xl-12">
+      <%= render partial: 'categories/category_block', locals: {category: category}%>
     </div>
     <%end%>
   </div>
 </div>
 
-
-
-<h5><%=t :categories%></h5>
-<hr class="mt-2 mb-3"/>
-<div class="row row-cards row-deck">
-  <% for category in @categories%>
-  <div class="col-sm-3 col-xl-3">
-    <%= render partial: 'categories/category_block', locals: {category: category}%>
+<div class="col-md-10">
+  <h5><%=t :advertisements%></h5>
+  <hr class="mt-2 mb-3"/>
+  <div class="row row-cards row-deck">
+    <% for advertisement in @advertisements%>
+    <div class="col-sm-3 col-xl-3">
+      <%= render partial: 'advertisements/advertisement_block', locals: {advertisement: advertisement}%>
+    </div>
+    <%end%>
   </div>
-  <%end%>
 </div>
-
-
-<h5><%=t :advertisements%></h5>
-<hr class="mt-2 mb-3"/>
-<div class="row row-cards row-deck">
-  <% for advertisement in @advertisements%>
-  <div class="col-sm-3 col-xl-3">
-    <%= render partial: 'advertisements/advertisement_block', locals: {advertisement: advertisement}%>
-  </div>
-  <%end%>
 </div>
