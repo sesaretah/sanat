@@ -10,84 +10,46 @@
       </div>
     </div>
 
-    <% if @upload_ids.blank?%>
-    <%= hidden_field_tag :attachments, ''%>
-    <%else%>
-    <%= hidden_field_tag :attachments, @upload_ids.split(',')%>
-    <%end%>
-    <%= f.hidden_field :content%>
-    <trix-editor input="advertisement_content"></trix-editor>
-    <div class="col-md-3 mt-2">
-      <div class="form-group">
-        <label class="form-label"><%=t :advertisement_category%></label>
-        <%= f.select(:category_id, options_for_select(Category.all.collect { |p| [ p.title, p.id ] }, @advertisement.category_id), {},{class: "form-control"}) %>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="form-group">
+          <%= f.label :content, class: "form-label" %>
+          <%= f.text_area :content, class: "form-control"%>
+        </div>
       </div>
     </div>
-  <%end%>
 
-  <div class="row">
-    <div class="col-md-12">
-      <h5 class="mt-5"><%=t :cover_photo%></h5>
-      <hr class="mt-2 mb-2"/>
-      <%= render partial: 'uploads/upload_form', locals: {item: @advertisement, ratio: '4/3', class_name: 'Advertisement', type:'advertisement_cover', max: 1}%>
+    <div class="row">
+      <div class="col-md-3 mt-2">
+        <div class="form-group">
+          <label class="form-label"><%=t :advertisement_category%></label>
+          <%= f.select(:category_id, options_for_select(Category.all.collect { |p| [ p.title, p.id ] }, @advertisement.category_id), {},{class: "form-control"}) %>
+        </div>
+      </div>
     </div>
+
+    <% if @upload_ids.blank?%>
+      <%= hidden_field_tag :attachments, ''%>
+      <%else%>
+      <%= hidden_field_tag :attachments, @upload_ids.split(',')%>
+      <%end%>
+      <%end%>
+
+      <div class="row">
+        <div class="col-md-12">
+          <h5 class="mt-5"><%=t :attachment_photos%> (<%=t :maximum%> 5 <%=t :photos%>)</h5>
+          <hr class="mt-2 mb-2"/>
+          <%= render partial: 'uploads/upload_form', locals: {item: @advertisement, ratio: '4/3', class_name: 'Advertisement', type:'attachment_photos', max: 5}%>
+        </div>
+      </div>
+    </div>
+    <div class="card-footer text-right">
+      <button id='submit-btn' type="submit" class="btn btn-primary"><%=t :submit%></button>
+    </div>
+    <script>
+    $( "#submit-btn" ).click(function() {
+      console.log('clicked');
+      $( ".<%= params[:action]%>_advertisement" ).submit();
+    });
+    </script>
   </div>
-</div>
-  <div class="card-footer text-right">
-    <button id='submit-btn' type="submit" class="btn btn-primary"><%=t :submit%></button>
-  </div>
-  <script>
-  $( "#submit-btn" ).click(function() {
-    console.log('clicked');
-    $( ".<%= params[:action]%>_advertisement" ).submit();
-  });
-  </script>
-</div>
-<script>
-$(document).ready(function() {
-  Trix.config.attachments.preview.caption = {
-    name: false,
-    size: false
-  };
-
-  function uploadAttachment(attachment) {
-    var csrfToken = $('meta[name="csrf-token"]').attr('content');
-    var file = attachment.file;
-    var form = new FormData;
-    var endpoint = "/uploads";
-    form.append("Content-Type", file.type);
-    form.append("file", file);
-    form.append("upload[uploadable_type]", 'Advertisement');
-    form.append("upload[uploadable_id]", '0');
-    form.append("authenticity_token", window._token);
-
-    xhr = new XMLHttpRequest;
-    xhr.open("POST", endpoint, true);
-    xhr.setRequestHeader("X-CSRF-Token", csrfToken);
-
-    xhr.upload.onprogress = function(event) {
-      var progress = event.loaded / event.total * 100;
-      return attachment.setUploadProgress(progress);
-    };
-
-    xhr.onload = function() {
-      if (this.status >= 200 && this.status < 300) {
-        var data = JSON.parse(this.responseText);
-        $('#attachments').val($('#attachments').val() + ',' + data.id);
-          return attachment.setAttributes({
-          url: data.extra
-        });
-      }
-    };
-
-    return xhr.send(form);
-  };
-
-  document.addEventListener("trix-attachment-add", function(event) {
-    var attachment = event.attachment;
-    if (attachment.file) {
-      return uploadAttachment(attachment);
-    }
-  });
-});
-</script>

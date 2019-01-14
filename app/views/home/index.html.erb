@@ -1,15 +1,18 @@
 <div class="row">
-<div class="col-md-2">
-  <h5><%=t :categories%></h5>
-  <hr class="mt-2 mb-3"/>
-  <div class="row row-cards row-deck">
-    <% for category in @categories%>
-    <div class="col-sm-12 col-xl-12">
-      <%= render partial: 'categories/category_block', locals: {category: category}%>
-    </div>
-    <%end%>
+  <div class="col-md-2">
+    <h5><%=t :categories%></h5>
+    <hr class="mt-2 mb-3"/>
+    <div class="card">
+    <table class="table card-table table-vcenter">
+      <tbody>
+        <tr><td class="small p-2"><i class="fe fe-chevron-left" style="vertical-align: -3px;"></i><%= link_to t(:all), "/"%></td></tr>
+        <% for category in @categories%>
+        <tr><td class="small p-2"><i class="fe fe-chevron-left" style="vertical-align: -3px;"></i><%= link_to category.title, "?category_id=#{category.id}"%></td></tr>
+        <%end%>
+      </tbody>
+    </table>
   </div>
-</div>
+  </div>
 
 <div class="col-md-10">
   <h5><%=t :advertisements%></h5>

@@ -238,7 +238,8 @@ fa:
             address: 'آدرس'
             about_us: 'درباره ما'
         advertisement:
-            title: 'عنوان '
+            title: 'موضوع آگهی'
+            content: 'متن آگهی'
         faq:
           question: 'پرسش'
           answer: 'پاسخ '
@@ -259,12 +260,18 @@ fa:
     page_gap: "&hellip;"
     previous_label: "قبلی"
     next_label: "بعدی"
+  destroy: 'حذف'
+  are_you_sure: 'آیا مطمئن هستید؟ '
+  crop_image: 'برش عکس'
+  attachment_photos: 'عکس های مرتبط با آگهی'
+  maximum: 'حداکثر'
+  photos: 'عکس'
   sign_in_or_sign_up: 'ثبت نام | ورود'
   change_current_role: 'تغییر نقش'
   slides: 'اسلایدها'
   related_advertisements: 'تعداد آگهی ها'
   all: 'همه '
-  advertisement_category: 'نوع تبلیغ '
+  advertisement_category: 'دسته بندی آگهی'
   size: 'ابعاد'
   large: 'بزرگ'
   user: 'کاربر'

@@ -5,7 +5,7 @@ class Advertisement < ActiveRecord::Base
   belongs_to :user
 
   def cover(style)
-    @upload = Upload.where(uploadable_id: self.id, attachment_type: 'advertisement_cover').first
+    @upload = Upload.where(uploadable_id: self.id, attachment_type: 'attachment_photos').first
     if !@upload.blank?
       return @upload.attachment(style)
     else
@@ -13,6 +13,18 @@ class Advertisement < ActiveRecord::Base
     end
   end
 
+  def photos(style)
+    @uploads = Upload.where(uploadable_id: self.id, attachment_type: 'attachment_photos')
+    if !@uploads.blank?
+      @images = []
+      for upload in @uploads
+        @images << {url: upload.attachment(style), id: upload.id}
+      end
+      return @images
+    else
+      return [{url: ActionController::Base.helpers.asset_path("noimage-35-#{style}.jpg", :digest => false), id: nil}]
+    end
+  end
 
   before_create :set_rank
   def set_rank

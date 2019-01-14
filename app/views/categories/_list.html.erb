@@ -1,32 +1,20 @@
-<%for category in Category.all%>
-<div class="row">
-  <div class="col-md-5">
-    <table class="table table-hover table-outline card-table">
-      <tr>
-        <td><%=t :title%></td>
-        <td><%= category.title%></td>
-      </tr>
-      <tr>
-        <td><%=t :related_advertisements%></td>
-        <td>
-          <div class="tag tag-dark" style='vertical-align: 6px;'>
-            <%= category.advertisements.count %>
-            <span class="tag-addon tag-success"><i class="far fa-flag" style="vertical-align: -3px;"></i></span>
-          </div>
-        </td>
-      </tr>
-      <tr>
-        <td></td>
-        <td>
-          <%= link_to "/categories/#{category.id}/destroy", remote: true, class: "icon" ,data: { confirm: 'Are you sure?' } do %>
-          <i class="fe fe-trash" style='vertical-align:-3px;'></i>
-          <%end%>
-        </td>
-      </tr>
-    </table>
-  </div>
-  <div class="col-md-7">
-    <%= render partial: 'uploads/upload_form', locals: {item: category, max: 1 ,ratio: '4/3', class_name: 'Category', type:'category_cover'}%>
-  </div>
+<div id='categories-list'>
+  <table class="table table-hover table-outline">
+    <%for category in Category.all%>
+    <tr>
+      <td><%= category.title%></td>
+      <td>
+        <div class="tag tag-dark" style='vertical-align: 6px;'>
+          <%= category.advertisements.count %>
+          <span class="tag-addon tag-success"><i class="far fa-flag" style="vertical-align: -3px;"></i></span>
+        </div>
+      </td>
+      <td>
+        <%= link_to "/categories/#{category.id}/destroy", remote: true, class: "icon" ,data: { confirm: 'Are you sure?' } do %>
+        <i class="fe fe-trash" style='vertical-align:-3px;'></i>
+        <%end%>
+      </td>
+    </tr>
+    <%end%>
+  </table>
 </div>
-<%end%>

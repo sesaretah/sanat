@@ -1,6 +1,6 @@
 class ApiController < ApplicationController
   skip_before_action :verify_authenticity_token
-  before_filter :authenticate_user!, :except => [:advertisements, :login, :sign_up]
+  before_filter :authenticate_user!, :except => [:advertisements, :login, :sign_up, :advertisement]
 
   def advertisements
     @advertisements = Advertisement.all
@@ -29,5 +29,15 @@ class ApiController < ApplicationController
       else
         render :json => {result: 'ERROR', error: @user.errors }.to_json , :callback => params['callback']
       end
+    end
+
+    def advertisement
+      @advertisement = Advertisement.find(params[:id])
+      @photos = []
+      for photo in @advertisement.photos('large')
+        @photos << {url:  request.base_url + photo[:url], id: photo[:id]}
+      end
+      @result = {id: @advertisement.id, title: @advertisement.title, content: @advertisement.content,'cover' => request.base_url + @advertisement.cover('large'), photos: @photos}
+      render :json => @result.to_json, :callback => params['callback']
     end
 end

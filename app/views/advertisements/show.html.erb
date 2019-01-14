@@ -46,11 +46,17 @@
       });
       </script>
       <a href="/advertisements/<%=@advertisement.uuid%>/edit" class='btn btn-secondary'><i class="fe fe-edit" style="vertical-align:-3px;"></i> <%=t :edit%></a>
+      <%= link_to @advertisement, method: :delete, class: "btn btn-secondary" ,data: { confirm: t(:are_you_sure) } do %>
+      <i class="dropdown-icon fe fe-trash"></i> <%=t :destroy%>
+      <%end%>
     </div>
   </div>
   <div class='card-body'>
     <div id="trix-content">
       <%= sanitize @advertisement.content%>
     </div>
+    <% for photo in @advertisement.photos('large')%>
+    <p><%= image_tag photo[:url]%></p>
+    <%end%>
   </div>
 </div>
