@@ -1,6 +1,6 @@
 class ApiController < ApplicationController
   skip_before_action :verify_authenticity_token
-  before_filter :authenticate_user!, :except => [:advertisements, :login, :sign_up, :advertisement]
+  before_filter :authenticate_user!, :except => [:advertisements, :login, :sign_up, :advertisement, :make_advertisement]
 
   def advertisements
     @advertisements = Advertisement.all
@@ -41,7 +41,7 @@ class ApiController < ApplicationController
       render :json => @result.to_json, :callback => params['callback']
     end
 
-    def advertisement
+    def make_advertisement
       @advertisement = Advertisement.create(title: params[:title])
       @result = {id: @advertisement.id}
       render :json => @result.to_json, :callback => params['callback']
