@@ -39,6 +39,6 @@ Rails.application.routes.draw do
   get '/api/login', to: "api#login"
 
   post '/api/sign_up', to: "api#sign_up"
-  post '/api/advertisement', to: "api#advertisement"
+  post '/api/make_advertisement', to: "api#make_advertisement"
 
 end
