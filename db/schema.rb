@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190109135027) do
+ActiveRecord::Schema.define(version: 20190114163657) do
 
   create_table "access_controls", force: :cascade do |t|
     t.boolean  "ability_to_post_ads"
@@ -79,9 +79,23 @@ ActiveRecord::Schema.define(version: 20190109135027) do
     t.datetime "updated_at",             null: false
     t.integer  "integer_id", limit: 4
     t.integer  "rank",       limit: 4
+    t.string   "parent_id",  limit: 255
   end
 
+  add_index "categories", ["parent_id"], name: "index_categories_on_parent_id", using: :btree
   add_index "categories", ["uuid"], name: "index_categories_on_uuid", unique: true, using: :btree
+
+  create_table "categorizations", force: :cascade do |t|
+    t.string   "category_id",      limit: 255
+    t.string   "advertisement_id", limit: 255
+    t.datetime "created_at",                   null: false
+    t.datetime "updated_at",                   null: false
+    t.string   "uuid",             limit: 255
+  end
+
+  add_index "categorizations", ["advertisement_id"], name: "index_categorizations_on_advertisement_id", using: :btree
+  add_index "categorizations", ["category_id"], name: "index_categorizations_on_category_id", using: :btree
+  add_index "categorizations", ["uuid"], name: "index_categorizations_on_uuid", unique: true, using: :btree
 
   create_table "companies", force: :cascade do |t|
     t.string   "name",             limit: 255
@@ -110,14 +124,21 @@ ActiveRecord::Schema.define(version: 20190109135027) do
   add_index "faqs", ["uuid"], name: "index_faqs_on_uuid", unique: true, using: :btree
 
   create_table "profiles", force: :cascade do |t|
-    t.string   "name",         limit: 255
-    t.string   "sex",          limit: 255
-    t.string   "uuid",         limit: 255
-    t.integer  "user_id",      limit: 4
-    t.datetime "created_at",               null: false
-    t.datetime "updated_at",               null: false
-    t.string   "phone_number", limit: 255
-    t.integer  "integer_id",   limit: 4
+    t.string   "name",             limit: 255
+    t.string   "sex",              limit: 255
+    t.string   "uuid",             limit: 255
+    t.integer  "user_id",          limit: 4
+    t.datetime "created_at",                   null: false
+    t.datetime "updated_at",                   null: false
+    t.string   "phone_number",     limit: 255
+    t.integer  "integer_id",       limit: 4
+    t.string   "address",          limit: 255
+    t.string   "province_id",      limit: 255
+    t.string   "city",             limit: 255
+    t.string   "email",            limit: 255
+    t.string   "telegram_channel", limit: 255
+    t.string   "instagram_page",   limit: 255
+    t.string   "website",          limit: 255
   end
 
   add_index "profiles", ["uuid"], name: "index_profiles_on_uuid", unique: true, using: :btree
@@ -160,7 +181,6 @@ ActiveRecord::Schema.define(version: 20190109135027) do
   end
 
   add_index "users", ["current_role_id"], name: "index_users_on_current_role_id", using: :btree
-  add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
 
 end

@@ -84,6 +84,7 @@ class AdvertisementsController < ApplicationController
     @advertisement.user_id = current_user.id
     respond_to do |format|
       if @advertisement.save
+        update_profile(params)
         manage_uploads(@advertisement)
         format.html { redirect_to @advertisement, notice: 'advertisement was successfully created.' }
         format.json { render :show, status: :created, location: @advertisement }
@@ -92,6 +93,16 @@ class AdvertisementsController < ApplicationController
         format.json { render json: @advertisement.errors, status: :unprocessable_entity }
       end
     end
+  end
+
+  def update_profile(params)
+    @profile = current_user.profile
+    @profile.phone_number = params[:phone_number]
+    @profile.telegram_channel = params[:telegram_channel]
+    @profile.instagram_page = params[:instagram_page]
+    @profile.email = params[:email]
+    @profile.address = params[:address]
+    @profile.save
   end
 
   # PATCH/PUT /advertisements/1
@@ -104,6 +115,7 @@ class AdvertisementsController < ApplicationController
       if @advertisement.update(advertisement_params)
         @advertisement.user_id = current_user.id
         manage_uploads(@advertisement)
+        update_profile(params)
         format.html { redirect_to @advertisement, notice: 'advertisement was successfully updated.' }
         format.json { render :show, status: :ok, location: @advertisement }
       else

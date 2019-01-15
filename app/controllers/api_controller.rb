@@ -40,4 +40,10 @@ class ApiController < ApplicationController
       @result = {id: @advertisement.id, title: @advertisement.title, content: @advertisement.content,'cover' => request.base_url + @advertisement.cover('large'), photos: @photos}
       render :json => @result.to_json, :callback => params['callback']
     end
+
+    def advertisement
+      @advertisement = Advertisement.create(title: params[:title])
+      @result = {id: @advertisement.id}
+      render :json => @result.to_json, :callback => params['callback']
+    end
 end

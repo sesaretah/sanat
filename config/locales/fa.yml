@@ -260,6 +260,10 @@ fa:
     page_gap: "&hellip;"
     previous_label: "قبلی"
     next_label: "بعدی"
+  phone_number: 'شماره تلفن'
+  telegram_channel: 'کانال تلگرام'
+  instagram_page: 'صفحه اینستاگرام'
+  address: 'آدرس '
   destroy: 'حذف'
   are_you_sure: 'آیا مطمئن هستید؟ '
   crop_image: 'برش عکس'

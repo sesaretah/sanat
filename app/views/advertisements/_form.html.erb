@@ -33,6 +33,70 @@
       <%else%>
       <%= hidden_field_tag :attachments, @upload_ids.split(',')%>
       <%end%>
+
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="form-label"><%=t :phone_number%></label>
+            <div class="input-group">
+              <span class="input-group-prepend" id="basic-addon1">
+                <span class="input-group-text"><i class="fa fa-phone" aria-hidden="true"></i></span>
+              </span>
+              <%= text_field_tag :phone_number,   current_user.profile.phone_number, class: "form-control", placeholder: "", style: 'direction: ltr;' %>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="form-label"><%=t :telegram_channel%></label>
+            <div class="input-group">
+              <span class="input-group-prepend" id="basic-addon1">
+                <span class="input-group-text"><i class="fab fa-telegram" aria-hidden="true"></i></span>
+              </span>
+              <%= text_field_tag :telegram_channel, current_user.profile.telegram_channel , class: "form-control", placeholder: "" , style: 'direction: ltr;'%>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="form-label"><%=t :instagram_page%></label>
+            <div class="input-group">
+              <span class="input-group-prepend" id="basic-addon1">
+                <span class="input-group-text"><i class="fab fa-instagram" aria-hidden="true"></i></span>
+              </span>
+              <%= text_field_tag :instagram_page, current_user.profile.instagram_page , class: "form-control", placeholder: "", style: 'direction: ltr;' %>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group">
+            <label class="form-label"><%=t :email%></label>
+            <div class="input-group">
+              <span class="input-group-prepend" id="basic-addon1">
+                <span class="input-group-text">@</span>
+              </span>
+              <%= text_field_tag :email , current_user.profile.email, class: "form-control", placeholder: "", style: 'direction: ltr;' %>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-7">
+          <div class="form-group">
+            <label class="form-label"><%=t :address%></label>
+            <%= text_area_tag :address, current_user.profile.address , class: "form-control" %>
+          </div>
+        </div>
+      </div>
+
+
       <%end%>
 
       <div class="row">
