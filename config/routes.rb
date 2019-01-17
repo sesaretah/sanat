@@ -38,7 +38,9 @@ Rails.application.routes.draw do
   get '/api/advertisement/:id', to: "api#advertisement"
   get '/api/login', to: "api#login"
 
+
   post '/api/sign_up', to: "api#sign_up"
   post '/api/make_advertisement', to: "api#make_advertisement"
+  post '/api/upload', to: "api#upload"
 
 end
