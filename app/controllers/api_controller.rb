@@ -1,6 +1,7 @@
 class ApiController < ApplicationController
   skip_before_action :verify_authenticity_token
   before_filter :authenticate_user!, :except => [:advertisements, :login, :sign_up, :advertisement, :make_advertisement, :upload]
+  before_action :is_admin, only: [:make_advertisement]
 
   def advertisements
     @advertisements = Advertisement.all
@@ -16,7 +17,7 @@ class ApiController < ApplicationController
       @user = User.find_by_username(params['username'])
       render :json => {result: 'OK', token: JWTWrapper.encode({ user_id: @user.id })}.to_json , :callback => params['callback']
     else
-      render :json => {result: 'ERROR' }.to_json , :callback => params['callback']
+      render :json => {result: 'ERROR',  error: @user.errors }.to_json , :callback => params['callback']
     end
   end
 
@@ -66,4 +67,11 @@ class ApiController < ApplicationController
       render :json => {error: 'ERROR' }.to_json , :callback => params['callback']
     end
   end
+
+  def is_admin
+    if current_user.blank?
+      head(403)
+    end
+  end
+
 end
