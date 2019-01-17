@@ -117,7 +117,7 @@
             <%= @jalali.year%>/<%= @jalali.month%>/<%= @jalali.day%>
           </td>
           <td class="w-1">
-            <%= link_to @advertisement, method: :delete, class: "icon" ,data: { confirm: t(:are_you_sure) } do %>
+            <%= link_to advertisement, method: :delete, remote: true ,class: "icon" ,data: { confirm: t(:are_you_sure) } do %>
             <i class="fe fe-trash"></i>
             <%end%>
           </td>

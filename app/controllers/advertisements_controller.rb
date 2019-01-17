@@ -135,6 +135,7 @@ class AdvertisementsController < ApplicationController
     respond_to do |format|
       format.html { redirect_to advertisements_url, notice: 'advertisement was successfully destroyed.' }
       format.json { head :no_content }
+      format.js
     end
   end
 
