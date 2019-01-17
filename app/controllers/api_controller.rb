@@ -43,6 +43,13 @@ class ApiController < ApplicationController
 
   def make_advertisement
     @advertisement = Advertisement.create(title: params[:title])
+    for upload_id in params[:uploaded]
+      @upload = Upload.find_by_id(upload_id)
+      if !@upload.blank?
+        @upload.uploadable_id = @advertisement.id
+        @upload.save
+      end
+    end
     @result = {id: @advertisement.id}
     render :json => @result.to_json, :callback => params['callback']
   end
