@@ -116,7 +116,11 @@
             <% @jalali = JalaliDate.to_jalali(advertisement.created_at)%>
             <%= @jalali.year%>/<%= @jalali.month%>/<%= @jalali.day%>
           </td>
-          <td class="w-1"><a href="#" class="icon"><i class="fe fe-trash"></i></a></td>
+          <td class="w-1">
+            <%= link_to @advertisement, method: :delete, class: "icon" ,data: { confirm: t(:are_you_sure) } do %>
+            <i class="fe fe-trash"></i>
+            <%end%>
+          </td>
         </tr>
         <%end%>
       </tbody>
