@@ -54,7 +54,7 @@ class ApiController < ApplicationController
     @upload.attachment_type = params[:attachment_type]
     @upload.attachment = params[:file]
     if @upload.save
-      render :json => {result: 'OK' }.to_json , :callback => params['callback']
+      render :json => {result: 'OK', id: @upload.id }.to_json , :callback => params['callback']
     else
       render :json => {error: 'ERROR' }.to_json , :callback => params['callback']
     end
