@@ -260,6 +260,7 @@ fa:
     page_gap: "&hellip;"
     previous_label: "قبلی"
     next_label: "بعدی"
+  doesnt_match: 'شماره موبایل و رمز هم خوان نیست '
   phone_number: 'شماره تلفن'
   telegram_channel: 'کانال تلگرام'
   instagram_page: 'صفحه اینستاگرام'
