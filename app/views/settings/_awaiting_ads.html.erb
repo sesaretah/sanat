@@ -18,7 +18,11 @@
       <tbody>
         <% for advertisement in Advertisement.all.order('created_at desc')%>
         <tr>
-          <td><%= truncate(advertisement.user.profile.name, length: 20)%></td>
+          <td>
+            <% if !advertisement.user.blank?%>
+              <%= truncate(advertisement.user.profile.name, length: 20)%>
+            <%end%>
+          </td>
           <td><%= truncate(advertisement.title, length: 20)%></td>
           <td>
             <%= link_to advertisement do%>
