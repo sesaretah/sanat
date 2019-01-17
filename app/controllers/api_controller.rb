@@ -1,6 +1,6 @@
 class ApiController < ApplicationController
   skip_before_action :verify_authenticity_token
-  before_filter :authenticate_user!, :except => [:advertisements, :login, :sign_up, :advertisement, :make_advertisement]
+  before_filter :authenticate_user!, :except => [:advertisements, :login, :sign_up, :advertisement, :make_advertisement, :upload]
 
   def advertisements
     @advertisements = Advertisement.all
