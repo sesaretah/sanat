@@ -43,7 +43,7 @@ class ApiController < ApplicationController
   end
 
   def make_advertisement
-    @advertisement = Advertisement.create(title: params[:title])
+    @advertisement = Advertisement.create(title: params[:title], content: params[:content], user_id: current_user.id)
     if !params[:uploaded].blank?
       for upload_id in params[:uploaded]
         @upload = Upload.find_by_id(upload_id)
