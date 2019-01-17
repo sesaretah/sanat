@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190114163657) do
+ActiveRecord::Schema.define(version: 20190117114503) do
 
   create_table "access_controls", force: :cascade do |t|
     t.boolean  "ability_to_post_ads"
@@ -42,6 +42,14 @@ ActiveRecord::Schema.define(version: 20190114163657) do
     t.integer  "rank",             limit: 4
     t.integer  "user_id",          limit: 4
     t.integer  "status",           limit: 4
+    t.string   "address",          limit: 255
+    t.string   "province_id",      limit: 255
+    t.string   "city",             limit: 255
+    t.string   "email",            limit: 255
+    t.string   "telegram_channel", limit: 255
+    t.string   "instagram_page",   limit: 255
+    t.string   "website",          limit: 255
+    t.string   "phone_number",     limit: 255
   end
 
   add_index "advertisements", ["category_id"], name: "index_advertisements_on_category_id", using: :btree
