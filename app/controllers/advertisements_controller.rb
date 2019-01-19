@@ -82,6 +82,7 @@ class AdvertisementsController < ApplicationController
     @advertisement.size = 1
     @advertisement.status = 0
     @advertisement.user_id = current_user.id
+    update_ad_contact(params)
     respond_to do |format|
       if @advertisement.save
         update_profile(params)
@@ -105,12 +106,23 @@ class AdvertisementsController < ApplicationController
     @profile.save
   end
 
+  def update_ad_contact(params)
+    @advertisement.phone_number = params[:phone_number]
+    @advertisement.telegram_channel = params[:telegram_channel]
+    @advertisement.instagram_page = params[:instagram_page]
+    @advertisement.email = params[:email]
+    @advertisement.address = params[:address]
+    @advertisement.website = params[:website]
+    @advertisement.city = params[:city]
+  end
+
   # PATCH/PUT /advertisements/1
   # PATCH/PUT /advertisements/1.json
   def update
     if !owner(@advertisement, current_user)
       head(403)
     end
+    update_ad_contact(params)
     respond_to do |format|
       if @advertisement.update(advertisement_params)
         @advertisement.user_id = current_user.id
@@ -148,7 +160,7 @@ class AdvertisementsController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def advertisement_params
-    params.require(:advertisement).permit(:title, :content, :agency_id, :uuid, :category_id)
+    params.require(:advertisement).permit(:title, :content, :agency_id, :uuid, :category_id, :phone_number, :city, :address, :email, :telegram_channel,:instagram_page, :website)
   end
 
   def verify_ads

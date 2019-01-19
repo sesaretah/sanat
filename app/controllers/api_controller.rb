@@ -38,7 +38,7 @@ class ApiController < ApplicationController
     for photo in @advertisement.photos('large')
       @photos << {url:  request.base_url + photo[:url], id: photo[:id]}
     end
-    @result = {id: @advertisement.id, title: @advertisement.title, content: @advertisement.content,'cover' => request.base_url + @advertisement.cover('large'), photos: @photos}
+    @result = {id: @advertisement.id, title: @advertisement.title, content: @advertisement.content, phone_number: @advertisement.phone_number, city: @advertisement.city, address: @advertisement.address, email: @advertisement.email, telegram_channel: @advertisement.telegram_channel, instagram_page: @advertisement.instagram_page, website: @advertisement.website,'cover' => request.base_url + @advertisement.cover('large'), photos: @photos}
     render :json => @result.to_json, :callback => params['callback']
   end
 
