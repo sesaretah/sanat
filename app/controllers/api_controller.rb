@@ -4,10 +4,14 @@ class ApiController < ApplicationController
   before_action :is_admin, only: [:make_advertisement, :profile]
 
   def advertisements
-    @advertisements = Advertisement.all
+    if params[:q].blank?
+      @advertisements = Advertisement.all.order('updated_at desc').paginate(:page => params[:page], :per_page => 5)
+    else
+      @advertisements = Advertisement.search params[:q], star: true
+    end
     @result = []
     for advertisement in @advertisements
-      @result << {id: advertisement.id, title: advertisement.title, 'cover' => request.base_url + advertisement.cover('large')}
+      @result << {id: advertisement.id, title: advertisement.title, content: advertisement.content ,'cover' => request.base_url + advertisement.cover('large')}
     end
     render :json => @result.to_json, :callback => params['callback']
   end

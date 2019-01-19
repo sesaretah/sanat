@@ -1,5 +1,6 @@
 class Advertisement < ActiveRecord::Base
   self.primary_key = 'uuid'
+  after_save ThinkingSphinx::RealTime.callback_for(:advertisement)
 
   belongs_to :category
   belongs_to :user
@@ -25,6 +26,18 @@ class Advertisement < ActiveRecord::Base
       return [{url: ActionController::Base.helpers.asset_path("noimage-35-#{style}.jpg", :digest => false), id: nil}]
     end
   end
+
+  before_create :set_integer_id
+  def set_integer_id
+    @last = Advertisement.all.order('integer_id desc').first
+    if !@last.blank?
+      @last_id = @last.integer_id
+    else
+      @last_id = 0
+    end
+    self.integer_id = @last_id + 1
+  end
+
 
   before_create :set_rank
   def set_rank
