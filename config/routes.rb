@@ -38,6 +38,8 @@ Rails.application.routes.draw do
   get '/api/advertisement/:id', to: "api#advertisement"
   get '/api/login', to: "api#login"
   get '/api/profile', to: "api#profile"
+  get '/api/my_advertisements', to: "api#my_advertisements"
+  get '/api/delete_advertisement/:id', to: "api#delete_advertisement"
 
 
   post '/api/sign_up', to: "api#sign_up"

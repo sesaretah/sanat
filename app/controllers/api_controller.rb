@@ -1,7 +1,7 @@
 class ApiController < ApplicationController
   skip_before_action :verify_authenticity_token
-  before_filter :authenticate_user!, :except => [:advertisements, :login, :sign_up, :advertisement, :make_advertisement, :upload, :profile]
-  before_action :is_admin, only: [:make_advertisement, :profile]
+  before_filter :authenticate_user!, :except => [:advertisements, :login, :sign_up, :advertisement, :make_advertisement, :upload, :profile, :owner, :my_advertisements, :delete_advertisement]
+  before_action :is_admin, only: [:make_advertisement, :profile, :owner, :my_advertisements, :delete_advertisement]
 
   def advertisements
     if params[:q].blank?
@@ -81,6 +81,41 @@ class ApiController < ApplicationController
   def profile
     @profile = current_user.profile
     render :json => @profile.to_json, :callback => params['callback']
+  end
+
+  def my_advertisements
+    @advertisements = current_user.advertisements.order('updated_at desc')
+    @result = []
+    for advertisement in @advertisements
+      @result << {id: advertisement.id, title: advertisement.title, content: advertisement.content ,'cover' => request.base_url + advertisement.cover('large')}
+    end
+    render :json => @result.to_json, :callback => params['callback']
+  end
+
+  def delete_advertisement
+    @advertisement = current_user.advertisements.find(params[:id])
+    if @advertisement.destroy
+      @advertisements = current_user.advertisements.order('updated_at desc')
+      @result = []
+      for advertisement in @advertisements
+        @result << {id: advertisement.id, title: advertisement.title, content: advertisement.content ,'cover' => request.base_url + advertisement.cover('large')}
+      end
+      render :json => @result.to_json, :callback => params['callback']
+    else
+      render :json => {error: 'ERROR'}.to_json , :callback => params['callback']
+    end
+  end
+
+
+
+
+  def owner
+    @advertisement = Advertisement.find(params[:id])
+    if @advertisement.user_id == current_user.id
+      render :json => {result: 'OK'}.to_json , :callback => params['callback']
+    else
+      render :json => {error: 'ERROR'}.to_json , :callback => params['callback']
+    end
   end
 
   def is_admin
