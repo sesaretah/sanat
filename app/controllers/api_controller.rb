@@ -5,7 +5,7 @@ class ApiController < ApplicationController
 
   def advertisements
     if params[:q].blank?
-      @advertisements = Advertisement.all.order('updated_at desc').paginate(:page => params[:page], :per_page => 5)
+      @advertisements = Advertisement.all.order('updated_at desc').paginate(:page => params[:page], :per_page => 10)
     else
       @advertisements = Advertisement.search params[:q], star: true
     end
