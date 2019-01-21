@@ -40,10 +40,12 @@ Rails.application.routes.draw do
   get '/api/profile', to: "api#profile"
   get '/api/my_advertisements', to: "api#my_advertisements"
   get '/api/delete_advertisement/:id', to: "api#delete_advertisement"
+  get '/api/delete_photo/:id', to: "api#delete_photo"
 
 
   post '/api/sign_up', to: "api#sign_up"
   post '/api/make_advertisement', to: "api#make_advertisement"
   post '/api/upload', to: "api#upload"
+  post '/api/edit_advertisement', to: "api#edit_advertisement"
 
 end
