@@ -176,6 +176,37 @@ class ApiController < ApplicationController
     end
   end
 
+  def unpin
+    @advertisement = Advertisement.find(params[:id])
+    if current_user
+      @user_id = current_user.id
+    else
+      @user_id = ''
+    end
+    @pin = Pin.where('advertisement_id = ? AND ( user_id = ? OR device_id = ?)', @advertisement.id, @user_id, params[:device_id]).first
+    if !@pin.blank?
+      @pin.destroy
+      render :json => {result: 'OK'}.to_json , :callback => params['callback']
+    else
+      render :json => {error: 'ERROR' }.to_json , :callback => params['callback']
+    end
+  end
+
+  def pinned
+    @advertisement = Advertisement.find(params[:id])
+    if current_user
+      @user_id = current_user.id
+    else
+      @user_id = ''
+    end
+    @pin = Pin.where('advertisement_id = ? AND ( user_id = ? OR device_id = ?)', @advertisement.id, @user_id, params[:device_id]).first
+    if !@pin.blank?
+      render :json => {result: 'OK'}.to_json , :callback => params['callback']
+    else
+      render :json => {error: 'ERROR' }.to_json , :callback => params['callback']
+    end
+  end
+
   def is_admin
     if current_user.blank?
       head(403)
