@@ -1,6 +1,6 @@
 class ApiController < ApplicationController
   skip_before_action :verify_authenticity_token
-  before_filter :authenticate_user!, :except => [:advertisements, :login, :sign_up, :advertisement, :make_advertisement, :upload, :profile, :owner, :my_advertisements, :delete_advertisement, :delete_photo]
+  before_filter :authenticate_user!, :except => [:advertisements, :login, :sign_up, :advertisement, :make_advertisement, :upload, :profile, :owner, :my_advertisements, :delete_advertisement, :delete_photo, :make_pin]
   before_action :is_admin, only: [:make_advertisement, :profile, :owner, :my_advertisements, :delete_advertisement, :delete_photo]
 
   def advertisements
@@ -158,6 +158,21 @@ class ApiController < ApplicationController
       render :json => {result: 'OK'}.to_json , :callback => params['callback']
     else
       render :json => {error: 'ERROR'}.to_json , :callback => params['callback']
+    end
+  end
+
+  def make_pin
+    @advertisement = Advertisement.find(params[:id])
+    if current_user
+      @user_id = current_user.id
+    else
+      @user_id = ''
+    end
+    @pin = Pin.new(advertisement_id: @advertisement.id, user_id: @user_id, device_id: params[:device_id])
+    if @pin.save
+      render :json => {result: 'OK', pin: @pin}.to_json , :callback => params['callback']
+    else
+      render :json => {error: 'ERROR' }.to_json , :callback => params['callback']
     end
   end
 
