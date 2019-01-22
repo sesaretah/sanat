@@ -47,10 +47,13 @@ Rails.application.routes.draw do
   get '/api/like/:id', to: "api#like"
   get '/api/dislike/:id', to: "api#dislike"
   get '/api/liked/:id', to: "api#liked"
+  get '/api/messages/:id', to: "api#messages"
+  get '/api/grouped_messages', to: "api#grouped_messages"
 
   post '/api/sign_up', to: "api#sign_up"
   post '/api/make_advertisement', to: "api#make_advertisement"
   post '/api/upload', to: "api#upload"
   post '/api/edit_advertisement', to: "api#edit_advertisement"
+  post '/api/new_message/:id', to: "api#new_message"
 
 end

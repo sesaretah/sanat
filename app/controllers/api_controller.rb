@@ -256,6 +256,71 @@ class ApiController < ApplicationController
     end
   end
 
+  def messages
+    @advertisement = Advertisement.find(params[:id])
+    if @advertisement.user_id != current_user.id
+      @room = Room.where(advertisement_id: @advertisement.id, user_id: current_user.id).first
+    else
+      @room = Room.find(params[:room_id])
+    end
+    if !@room.blank?
+      @messages = Message.where(room_id: @room.id).order('created_at desc').paginate(:page => params[:page], :per_page => 10)
+      if !@messages.blank?
+        @result = []
+        for message in @messages
+          if message.user_id == current_user.id
+            @type = 'sent'
+          else
+            @type = 'received'
+          end
+          @result << {text: message.content, type: @type}
+        end
+        render :json => {result: 'OK', messages: @result, room_id: @room.id}.to_json , :callback => params['callback']
+      else
+        render :json => {error: 'ERROR' }.to_json , :callback => params['callback']
+      end
+    end
+  end
+
+  def grouped_messages
+    @result = []
+    Room.all.group_by(&:advertisement).each do |ad, rooms|
+      @rooms = []
+      for room in rooms
+        @rooms << {id: room.id, profile: room.user.profile.name}
+      end
+      @result << {id: ad.id, title: ad.title, rooms: @rooms}
+    end
+    if !@result.blank?
+      render :json => {result: 'OK', result: @result}.to_json , :callback => params['callback']
+    else
+      render :json => {error: 'ERROR' }.to_json , :callback => params['callback']
+    end
+  end
+
+  def new_message
+    @advertisement = Advertisement.find(params[:id])
+    if @advertisement.user_id != current_user.id
+      @room = Room.where(advertisement_id: @advertisement.id, user_id: current_user.id).first
+      if !@room.blank?
+        @message = Message.create(room_id: @room.id, user_id: current_user.id, content: params[:content])
+      else
+        @room = Room.create(advertisement_id: @advertisement.id, user_id: current_user.id)
+        @message = Message.create(room_id: @room.id, user_id: current_user.id, content: params[:content])
+      end
+    else
+      @room = Room.find(params[:room_id])
+      @message = Message.create(room_id: @room.id, user_id: current_user.id, content: params[:content])
+    end
+
+    if !@message.blank?
+      @result = {text: @message.content, type: 'sent'}
+      render :json => {result: 'OK', message: @result}.to_json , :callback => params['callback']
+    else
+      render :json => {error: 'ERROR' }.to_json , :callback => params['callback']
+    end
+  end
+
   def is_admin
     if current_user.blank?
       head(403)
