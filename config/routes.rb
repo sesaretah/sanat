@@ -44,6 +44,9 @@ Rails.application.routes.draw do
   get '/api/make_pin/:id', to: "api#make_pin"
   get '/api/pinned/:id', to: "api#pinned"
   get '/api/unpin/:id', to: "api#unpin"
+  get '/api/like/:id', to: "api#like"
+  get '/api/dislike/:id', to: "api#dislike"
+  get '/api/liked/:id', to: "api#liked"
 
   post '/api/sign_up', to: "api#sign_up"
   post '/api/make_advertisement', to: "api#make_advertisement"

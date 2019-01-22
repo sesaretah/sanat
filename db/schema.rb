@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190121122826) do
+ActiveRecord::Schema.define(version: 20190122063929) do
 
   create_table "access_controls", force: :cascade do |t|
     t.boolean  "ability_to_post_ads"
@@ -131,6 +131,20 @@ ActiveRecord::Schema.define(version: 20190121122826) do
   end
 
   add_index "faqs", ["uuid"], name: "index_faqs_on_uuid", unique: true, using: :btree
+
+  create_table "likes", force: :cascade do |t|
+    t.string   "likeable_id",   limit: 255
+    t.string   "likeable_type", limit: 255
+    t.string   "uuid",          limit: 255
+    t.datetime "created_at",                null: false
+    t.datetime "updated_at",                null: false
+    t.integer  "user_id",       limit: 4
+    t.string   "device_id",     limit: 255
+  end
+
+  add_index "likes", ["likeable_id"], name: "index_likes_on_likeable_id", using: :btree
+  add_index "likes", ["likeable_type"], name: "index_likes_on_likeable_type", using: :btree
+  add_index "likes", ["uuid"], name: "index_likes_on_uuid", unique: true, using: :btree
 
   create_table "pins", force: :cascade do |t|
     t.string   "advertisement_id", limit: 255

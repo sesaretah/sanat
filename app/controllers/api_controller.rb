@@ -1,6 +1,6 @@
 class ApiController < ApplicationController
   skip_before_action :verify_authenticity_token
-  before_filter :authenticate_user!, :except => [:advertisements, :login, :sign_up, :advertisement, :make_advertisement, :upload, :profile, :owner, :my_advertisements, :delete_advertisement, :delete_photo, :make_pin, :unpin, :pinned]
+  before_filter :authenticate_user!, :except => [:advertisements, :login, :sign_up, :advertisement, :make_advertisement, :upload, :profile, :owner, :my_advertisements, :delete_advertisement, :delete_photo, :make_pin, :unpin, :pinned, :like, :dislike]
   before_action :is_admin, only: [:make_advertisement, :profile, :owner, :my_advertisements, :delete_advertisement, :delete_photo]
 
   def advertisements
@@ -202,6 +202,55 @@ class ApiController < ApplicationController
     @pin = Pin.where('advertisement_id = ? AND ( user_id = ? OR device_id = ?)', @advertisement.id, @user_id, params[:device_id]).first
     if !@pin.blank?
       render :json => {result: 'OK'}.to_json , :callback => params['callback']
+    else
+      render :json => {error: 'ERROR' }.to_json , :callback => params['callback']
+    end
+  end
+
+  def liked
+    @advertisement = Advertisement.find(params[:id])
+    if current_user
+      @user_id = current_user.id
+    else
+      @user_id = ''
+    end
+    @like = Like.where('likeable_id = ? AND ( user_id = ? OR device_id = ?)', @advertisement.id, @user_id, params[:device_id]).first
+    if !@like.blank?
+      @likes = Like.where(likeable_id: @advertisement.id).count
+      render :json => {result: 'OK', likes: @likes}.to_json , :callback => params['callback']
+    else
+      render :json => {error: 'ERROR' }.to_json , :callback => params['callback']
+    end
+  end
+
+  def like
+    @advertisement = Advertisement.find(params[:id])
+    if current_user
+      @user_id = current_user.id
+    else
+      @user_id = ''
+    end
+    @like = Like.new(likeable_id: @advertisement.id, likeable_type: 'Advertisement', user_id: @user_id, device_id: params[:device_id])
+    if @like.save
+      @likes = Like.where(likeable_id: @advertisement.id).count
+      render :json => {result: 'OK', likes: @likes}.to_json , :callback => params['callback']
+    else
+      render :json => {error: 'ERROR' }.to_json , :callback => params['callback']
+    end
+  end
+
+  def dislike
+    @advertisement = Advertisement.find(params[:id])
+    if current_user
+      @user_id = current_user.id
+    else
+      @user_id = ''
+    end
+    @like = Like.where('likeable_id = ? AND ( user_id = ? OR device_id = ?)', @advertisement.id, @user_id, params[:device_id]).first
+    if !@like.blank?
+      @like.destroy
+      @likes = Like.where(likeable_id: @advertisement.id).count
+      render :json => {result: 'OK', likes: @likes}.to_json , :callback => params['callback']
     else
       render :json => {error: 'ERROR' }.to_json , :callback => params['callback']
     end
