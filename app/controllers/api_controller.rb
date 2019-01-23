@@ -298,6 +298,21 @@ class ApiController < ApplicationController
     end
   end
 
+  def rooms
+    @advertisement = Advertisement.find(params[:id])
+    @rooms = @advertisement.rooms
+    @result = []
+    for room in @rooms
+      @result << {id: room.id, advert_id: @advertisement.id,title: room.user.profile.name}
+    end
+
+    if !@result.blank?
+      render :json => {result: 'OK', result: @result}.to_json , :callback => params['callback']
+    else
+      render :json => {error: 'ERROR' }.to_json , :callback => params['callback']
+    end
+  end
+
   def new_message
     @advertisement = Advertisement.find(params[:id])
     if @advertisement.user_id != current_user.id
