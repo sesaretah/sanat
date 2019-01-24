@@ -49,7 +49,12 @@ Rails.application.routes.draw do
   get '/api/liked/:id', to: "api#liked"
   get '/api/messages/:id', to: "api#messages"
   get '/api/grouped_messages', to: "api#grouped_messages"
+  get '/api/admin_grouped_messages', to: "api#admin_grouped_messages"
   get '/api/rooms/:id', to: "api#rooms"
+  get '/api/seen/:id', to: "api#seen"
+  get '/api/user_advert_room/:id', to: "api#user_advert_room"
+  get '/api/all_unseens', to: "api#all_unseens"
+
 
   post '/api/sign_up', to: "api#sign_up"
   post '/api/make_advertisement', to: "api#make_advertisement"

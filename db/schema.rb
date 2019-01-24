@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190122133822) do
+ActiveRecord::Schema.define(version: 20190123150015) do
 
   create_table "access_controls", force: :cascade do |t|
     t.boolean  "ability_to_post_ads"
@@ -210,6 +210,17 @@ ActiveRecord::Schema.define(version: 20190122133822) do
 
   add_index "rooms", ["advertisement_id"], name: "index_rooms_on_advertisement_id", using: :btree
   add_index "rooms", ["uuid"], name: "index_rooms_on_uuid", unique: true, using: :btree
+
+  create_table "seens", force: :cascade do |t|
+    t.string   "room_id",    limit: 255
+    t.integer  "user_id",    limit: 4
+    t.string   "uuid",       limit: 255
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
+
+  add_index "seens", ["room_id"], name: "index_seens_on_room_id", using: :btree
+  add_index "seens", ["uuid"], name: "index_seens_on_uuid", unique: true, using: :btree
 
   create_table "uploads", force: :cascade do |t|
     t.string   "uploadable_type",         limit: 255

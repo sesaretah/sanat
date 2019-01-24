@@ -1,6 +1,6 @@
 class ApiController < ApplicationController
   skip_before_action :verify_authenticity_token
-  before_filter :authenticate_user!, :except => [:advertisements, :login, :sign_up, :advertisement, :make_advertisement, :upload, :profile, :owner, :my_advertisements, :delete_advertisement, :delete_photo, :make_pin, :unpin, :pinned, :like, :dislike]
+  before_filter :authenticate_user!, :except => [:advertisements, :login, :sign_up, :advertisement, :make_advertisement, :upload, :profile, :owner, :my_advertisements, :delete_advertisement, :delete_photo, :make_pin, :unpin, :pinned, :like, :dislike, :all_unseens]
   before_action :is_admin, only: [:make_advertisement, :profile, :owner, :my_advertisements, :delete_advertisement, :delete_photo]
 
   def advertisements
@@ -42,7 +42,12 @@ class ApiController < ApplicationController
     for photo in @advertisement.photos('large')
       @photos << {url:  request.base_url + photo[:url], id: photo[:id]}
     end
-    @result = {id: @advertisement.id, title: @advertisement.title, content: @advertisement.content, phone_number: @advertisement.phone_number, city: @advertisement.city, address: @advertisement.address, email: @advertisement.email, telegram_channel: @advertisement.telegram_channel, instagram_page: @advertisement.instagram_page, website: @advertisement.website,'cover' => request.base_url + @advertisement.cover('large'), photos: @photos}
+    if current_user && current_user.id == @advertisement.user_id
+      @owner = true
+    else
+      @owner = false
+    end
+    @result = {id: @advertisement.id, title: @advertisement.title, content: @advertisement.content, phone_number: @advertisement.phone_number, city: @advertisement.city, address: @advertisement.address, email: @advertisement.email, telegram_channel: @advertisement.telegram_channel, instagram_page: @advertisement.instagram_page, website: @advertisement.website,'cover' => request.base_url + @advertisement.cover('large'), photos: @photos, owner: @owner}
     render :json => @result.to_json, :callback => params['callback']
   end
 
@@ -275,6 +280,7 @@ class ApiController < ApplicationController
           end
           @result << {text: message.content, type: @type}
         end
+        @seen = Seen.create(user_id: current_user.id, room_id: @room.id)
         render :json => {result: 'OK', messages: @result, room_id: @room.id}.to_json , :callback => params['callback']
       else
         render :json => {error: 'ERROR' }.to_json , :callback => params['callback']
@@ -284,12 +290,42 @@ class ApiController < ApplicationController
 
   def grouped_messages
     @result = []
-    Room.all.group_by(&:advertisement).each do |ad, rooms|
+    current_user.rooms.all.group_by(&:advertisement).each do |ad, rooms|
       @rooms = []
+      @count = 0
       for room in rooms
+        @seen = Seen.where(user_id: current_user.id, room_id: room.id).order('created_at desc').first
+        if !@seen.blank?
+          @count += Message.where('room_id = ? and created_at > ?', room.id, @seen.created_at).count
+        else
+          @count += Message.where('room_id = ?', room.id).count
+        end
         @rooms << {id: room.id, profile: room.user.profile.name}
       end
-      @result << {id: ad.id, title: ad.title, rooms: @rooms}
+      @result << {id: ad.id, title: ad.title, rooms: @rooms, count: @count}
+    end
+    if !@result.blank?
+      render :json => {result: 'OK', result: @result}.to_json , :callback => params['callback']
+    else
+      render :json => {error: 'ERROR' }.to_json , :callback => params['callback']
+    end
+  end
+
+  def admin_grouped_messages
+    @result = []
+     Room.all.joins(:advertisement).where(advertisements: {user_id: current_user.id}).group_by(&:advertisement).each do |ad, rooms|
+      @rooms = []
+      @count = 0
+      for room in rooms
+        @seen = Seen.where(user_id: current_user.id, room_id: room.id).order('created_at desc').first
+        if !@seen.blank?
+          @count += Message.where('room_id = ? and created_at > ?', room.id, @seen.created_at).count
+        else
+          @count += Message.where('room_id = ?', room.id).count
+        end
+        @rooms << {id: room.id, profile: room.user.profile.name}
+      end
+      @result << {id: ad.id, title: ad.title, rooms: @rooms, count: @count}
     end
     if !@result.blank?
       render :json => {result: 'OK', result: @result}.to_json , :callback => params['callback']
@@ -303,7 +339,14 @@ class ApiController < ApplicationController
     @rooms = @advertisement.rooms
     @result = []
     for room in @rooms
-      @result << {id: room.id, advert_id: @advertisement.id,title: room.user.profile.name}
+      @count = 0
+      @seen = Seen.where(user_id: current_user.id, room_id: room.id).order('created_at desc').first
+      if !@seen.blank?
+        @count += Message.where('room_id = ? and created_at > ?', room.id, @seen.created_at).count
+      else
+        @count += Message.where('room_id = ?', room.id).count
+      end
+      @result << {id: room.id, advert_id: @advertisement.id,title: room.user.profile.name, count: @count}
     end
 
     if !@result.blank?
@@ -327,14 +370,58 @@ class ApiController < ApplicationController
       @room = Room.find(params[:room_id])
       @message = Message.create(room_id: @room.id, user_id: current_user.id, content: params[:content])
     end
-
     if !@message.blank?
+      @seen = Seen.create(user_id: current_user.id, room_id: @room.id)
       @result = {text: @message.content, type: 'sent'}
       render :json => {result: 'OK', message: @result}.to_json , :callback => params['callback']
     else
       render :json => {error: 'ERROR' }.to_json , :callback => params['callback']
     end
   end
+
+  def seen
+    @room = Room.find(params[:id])
+    @seen = Seen.create(user_id: current_user.id, room_id: @room.id)
+    if !@seen.blank?
+      render :json => {result: 'OK'}.to_json , :callback => params['callback']
+    else
+      render :json => {error: 'ERROR' }.to_json , :callback => params['callback']
+    end
+  end
+
+  def user_advert_room
+    @advertisement = Advertisement.find(params[:id])
+    @room = Room.where(advertisement_id: @advertisement.id, user_id: current_user.id).first
+    if !@room.blank?
+      render :json => {result: 'OK', room: @room}.to_json , :callback => params['callback']
+    else
+      render :json => {error: 'ERROR' }.to_json , :callback => params['callback']
+    end
+  end
+
+  def all_unseens
+    @admin_rooms =  Room.all.joins(:advertisement).where(advertisements: {user_id: current_user.id})
+    @count = 0
+    for room in @admin_rooms
+      @seen = Seen.where(user_id: current_user.id, room_id: room.id).order('created_at desc').first
+      if !@seen.blank?
+        @count += Message.where('room_id = ? and created_at > ?', room.id, @seen.created_at).count
+      else
+        @count += Message.where('room_id = ?', room.id).count
+      end
+    end
+    @rooms = Room.where(user_id: current_user.id)
+    for room in @rooms
+      @seen = Seen.where(user_id: current_user.id, room_id: room.id).order('created_at desc').first
+      if !@seen.blank?
+        @count += Message.where('room_id = ? and created_at > ?', room.id, @seen.created_at).count
+      else
+        @count += Message.where('room_id = ?', room.id).count
+      end
+    end
+    render :json => {result: 'OK', count: @count}.to_json , :callback => params['callback']
+  end
+
 
   def is_admin
     if current_user.blank?
