@@ -54,6 +54,7 @@ Rails.application.routes.draw do
   get '/api/seen/:id', to: "api#seen"
   get '/api/user_advert_room/:id', to: "api#user_advert_room"
   get '/api/all_unseens', to: "api#all_unseens"
+  get '/api/my_pins', to: "api#my_pins"
 
 
   post '/api/sign_up', to: "api#sign_up"

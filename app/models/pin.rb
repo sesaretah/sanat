@@ -1,6 +1,8 @@
 class Pin < ActiveRecord::Base
   self.primary_key = 'uuid'
 
+  belongs_to :advertisement
+  
   before_create :set_uuid
   def set_uuid
     self.uuid = SecureRandom.uuid

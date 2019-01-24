@@ -16,6 +16,15 @@ class ApiController < ApplicationController
     render :json => @result.to_json, :callback => params['callback']
   end
 
+  def my_pins
+    @advertisements = Advertisement.all.joins(:pins).where(pins: {user_id: current_user.id})
+    @result = []
+    for advertisement in @advertisements
+      @result << {id: advertisement.id, title: advertisement.title, content: advertisement.content ,'cover' => request.base_url + advertisement.cover('large')}
+    end
+    render :json => @result.to_json, :callback => params['callback']
+  end
+
   def login
     if User.find_by_username(params['username']).try(:valid_password?, params[:password])
       @user = User.find_by_username(params['username'])
