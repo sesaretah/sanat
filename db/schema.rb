@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190123150015) do
+ActiveRecord::Schema.define(version: 20190126110210) do
 
   create_table "access_controls", force: :cascade do |t|
     t.boolean  "ability_to_post_ads"
@@ -121,6 +121,20 @@ ActiveRecord::Schema.define(version: 20190123150015) do
   end
 
   add_index "companies", ["uuid"], name: "index_companies_on_uuid", unique: true, using: :btree
+
+  create_table "devices", force: :cascade do |t|
+    t.string   "device_uuid", limit: 255
+    t.string   "fcm_token",   limit: 255
+    t.integer  "user_id",     limit: 4
+    t.string   "uuid",        limit: 255
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
+  end
+
+  add_index "devices", ["device_uuid"], name: "index_devices_on_device_uuid", using: :btree
+  add_index "devices", ["fcm_token"], name: "index_devices_on_fcm_token", using: :btree
+  add_index "devices", ["user_id"], name: "index_devices_on_user_id", using: :btree
+  add_index "devices", ["uuid"], name: "index_devices_on_uuid", unique: true, using: :btree
 
   create_table "faqs", force: :cascade do |t|
     t.string   "question",   limit: 255

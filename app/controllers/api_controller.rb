@@ -17,11 +17,11 @@ class ApiController < ApplicationController
   end
 
   def update_token
-    @device = Device.where(device_id: params[:device_id])
+    @device = Device.where(device_id: params[:device_uuid])
     if @device.blank?
-      @device = Device.create(device_id: params[:device_id])
+      @device = Device.create(device_uuid: params[:device_uuid])
     end
-    @device.fcm_token = params[:fecm_token]
+    @device.fcm_token = params[:fcm_token]
     @device.user_id = current_user.id
     if @device.save
       render :json => {result: 'OK'}.to_json , :callback => params['callback']
