@@ -93,6 +93,7 @@ class ApiController < ApplicationController
   end
 
   def profile
+    Rails.logger.info(request.env)
     @profile = current_user.profile
     render :json => @profile.to_json, :callback => params['callback']
   end
