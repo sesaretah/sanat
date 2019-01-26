@@ -9,6 +9,7 @@ class User < ActiveRecord::Base
   has_one :profile
   has_many :assignments
   has_many :rooms
+  has_many :messages
 
   has_many :roles, :through => :assignments
   has_many :assignments, dependent: :destroy
