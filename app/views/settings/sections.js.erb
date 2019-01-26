@@ -25,6 +25,11 @@ $("#settings-detail").replaceWith("<%= escape_javascript(render(:partial => 'ass
 $("#assignments-nav").addClass('active');
 <%end%>
 
+<% if @section == 'provinces'%>
+$("#settings-detail").replaceWith("<%= escape_javascript(render(:partial => 'provinces/form')) %>");
+$("#provinces-nav").addClass('active');
+<%end%>
+
 <% if @section == 'slides'%>
 $("#settings-detail").replaceWith("<%= escape_javascript(render(:partial => 'settings/slides')) %>");
 $("#slides-nav").addClass('active');

@@ -1,6 +1,6 @@
 class ApiController < ApplicationController
   skip_before_action :verify_authenticity_token
-  before_filter :authenticate_user!, :except => [:advertisements, :login, :sign_up, :advertisement, :make_advertisement, :upload, :profile, :owner, :my_advertisements, :delete_advertisement, :delete_photo, :make_pin, :unpin, :pinned, :like, :dislike, :all_unseens, :update_token]
+  before_filter :authenticate_user!, :except => [:advertisements, :login, :sign_up, :advertisement, :make_advertisement, :upload, :profile, :owner, :my_advertisements, :delete_advertisement, :delete_photo, :make_pin, :unpin, :pinned, :like, :dislike, :all_unseens, :update_token, :provinces]
   before_action :is_admin, only: [:make_advertisement, :profile, :owner, :my_advertisements, :delete_advertisement, :delete_photo, :update_token]
 
   def advertisements
@@ -443,6 +443,11 @@ class ApiController < ApplicationController
       end
     end
     render :json => {result: 'OK', count: @count}.to_json , :callback => params['callback']
+  end
+
+  def provinces
+    @provinces = Province.all.order('name')
+    render :json => {result: 'OK', provinces: @provinces}.to_json , :callback => params['callback']
   end
 
 

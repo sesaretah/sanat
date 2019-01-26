@@ -7,6 +7,7 @@ class Advertisement < ActiveRecord::Base
   has_many :likes, :as => :likeable, :dependent => :destroy
   has_many :rooms
   has_many :pins
+  belongs_to :province
 
   def cover(style)
     @upload = Upload.where(uploadable_id: self.id, attachment_type: 'attachment_photos').first

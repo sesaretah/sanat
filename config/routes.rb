@@ -27,6 +27,9 @@ Rails.application.routes.draw do
   get '/roles/access/:id', to: "roles#access"
   get '/roles/change_current_role', to: "roles#change_current_role"
 
+  post '/provinces', to: "provinces#create"
+  get '/provinces/:id/destroy', to: "provinces#destroy"
+
   post '/assignments', to: "assignments#create"
   get '/assignments/:id/destroy', to: "assignments#destroy"
   get '/advertisements/change_status/:id', to: "advertisements#change_status"
@@ -56,6 +59,7 @@ Rails.application.routes.draw do
   get '/api/all_unseens', to: "api#all_unseens"
   get '/api/my_pins', to: "api#my_pins"
   get '/api/update_token', to: "api#update_token"
+  get '/api/provinces', to: "api#provinces"
 
 
 

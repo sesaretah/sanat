@@ -1,7 +1,7 @@
-class Pin < ActiveRecord::Base
+class Province < ActiveRecord::Base
   self.primary_key = 'uuid'
 
-  belongs_to :advertisement
+  has_many :advertisements
 
   before_create :set_uuid
   def set_uuid
@@ -13,6 +13,6 @@ class Pin < ActiveRecord::Base
   end
 
   def self.find(uuid)
-    Pin.find_by_uuid(uuid)
+    Province.find_by_uuid(uuid)
   end
 end

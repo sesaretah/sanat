@@ -32,6 +32,10 @@
       <%end%>
       <%end%>
 
+      <%= link_to '/settings/section?section=provinces', id: 'provinces-nav',class: "list-group-item list-group-item-action small mb-1", style:'font-weight:normal;', remote: true do%>
+      <i class="fe fe-book" style="vertical-align:-3px;"></i> <%=t :provinces%>
+      <%end%>
+
       <%= link_to '/settings/section?section=slides', id: 'slides-nav',class: "list-group-item list-group-item-action small mb-1", style:'font-weight:normal;', remote: true do%>
       <i class="fe fe-fast-forward" style="vertical-align:-3px;"></i> <%=t :slides%>
       <%end%>

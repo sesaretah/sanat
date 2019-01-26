@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190126110210) do
+ActiveRecord::Schema.define(version: 20190126141110) do
 
   create_table "access_controls", force: :cascade do |t|
     t.boolean  "ability_to_post_ads"
@@ -204,6 +204,15 @@ ActiveRecord::Schema.define(version: 20190126110210) do
   end
 
   add_index "profiles", ["uuid"], name: "index_profiles_on_uuid", unique: true, using: :btree
+
+  create_table "provinces", force: :cascade do |t|
+    t.string   "name",       limit: 255
+    t.string   "uuid",       limit: 255
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
+
+  add_index "provinces", ["uuid"], name: "index_provinces_on_uuid", unique: true, using: :btree
 
   create_table "roles", force: :cascade do |t|
     t.string   "title",      limit: 255

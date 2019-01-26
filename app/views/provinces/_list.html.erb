@@ -1,0 +1,14 @@
+<div id='provinces-list'>
+  <table class="table table-hover table-outline">
+    <%for province in Province.all%>
+    <tr>
+      <td><%= province.name rescue nil%></td>
+      <td>
+        <%= link_to "/provinces/#{province.id}/destroy", remote: true, class: "icon" ,data: { confirm: t(:are_you_sure) } do %>
+        <i class="fe fe-trash" style='vertical-align:-3px;'></i>
+        <%end%>
+      </td>
+    </tr>
+    <%end%>
+  </table>
+</div>

@@ -1,0 +1,17 @@
+<div id='settings-detail'>
+  <div class="card-header">
+    <%= form_tag '/provinces', remote: true, method: :post do%>
+    <div class="row p-0">
+      <div class="col-md-9">
+        <%= text_field_tag :name, nil , class: "form-control", placeholder: t(:name) %>
+      </div>
+      <div class="col-md-2">
+        <button type="submit" class="btn btn-secondary"><%=t :submit%></button>
+      </div>
+    </div>
+    <%end%>
+  </div>
+  <div class="card-body">
+    <%= render partial: 'provinces/list'%>
+  </div>
+</div>
