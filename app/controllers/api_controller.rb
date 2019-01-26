@@ -17,7 +17,7 @@ class ApiController < ApplicationController
   end
 
   def update_token
-    @device = Device.where(device_id: params[:device_uuid])
+    @device = Device.where(device_uuid: params[:device_uuid])
     if @device.blank?
       @device = Device.create(device_uuid: params[:device_uuid])
     end
