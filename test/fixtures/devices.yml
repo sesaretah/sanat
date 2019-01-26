@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  device_uuid: MyString
+  fcm_token: MyString
+  user_id: 1
+  uuid: MyString
+
+two:
+  device_uuid: MyString
+  fcm_token: MyString
+  user_id: 1
+  uuid: MyString

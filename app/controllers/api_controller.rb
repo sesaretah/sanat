@@ -1,7 +1,7 @@
 class ApiController < ApplicationController
   skip_before_action :verify_authenticity_token
-  before_filter :authenticate_user!, :except => [:advertisements, :login, :sign_up, :advertisement, :make_advertisement, :upload, :profile, :owner, :my_advertisements, :delete_advertisement, :delete_photo, :make_pin, :unpin, :pinned, :like, :dislike, :all_unseens]
-  before_action :is_admin, only: [:make_advertisement, :profile, :owner, :my_advertisements, :delete_advertisement, :delete_photo]
+  before_filter :authenticate_user!, :except => [:advertisements, :login, :sign_up, :advertisement, :make_advertisement, :upload, :profile, :owner, :my_advertisements, :delete_advertisement, :delete_photo, :make_pin, :unpin, :pinned, :like, :dislike, :all_unseens, :update_token]
+  before_action :is_admin, only: [:make_advertisement, :profile, :owner, :my_advertisements, :delete_advertisement, :delete_photo, :update_token]
 
   def advertisements
     if params[:q].blank?
@@ -14,6 +14,20 @@ class ApiController < ApplicationController
       @result << {id: advertisement.id, title: advertisement.title, content: advertisement.content ,'cover' => request.base_url + advertisement.cover('large')}
     end
     render :json => @result.to_json, :callback => params['callback']
+  end
+
+  def update_token
+    @device = Device.where(device_id: params[:device_id])
+    if @device.blank?
+      @device = Device.create(device_id: params[:device_id])
+    end
+    @device.fcm_token = params[:fecm_token]
+    @device.user_id = current_user.id
+    if @device.save
+      render :json => {result: 'OK'}.to_json , :callback => params['callback']
+    else
+      render :json => {error: 'ERROR'}.to_json , :callback => params['callback']
+    end
   end
 
   def my_pins
