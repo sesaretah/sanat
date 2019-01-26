@@ -23,7 +23,7 @@ class Message < ActiveRecord::Base
     @room = self.room
     @user_id = []
     if @advertisement.user_id == self.user_id
-      @user_id << Message.where('room_id = ? and user_id <> ?', @room.id, self.user_id).first.pluck(:user_id)
+      @user_id << Message.where('room_id = ? and user_id <> ?', @room.id, self.user_id).pluck(:user_id).first
     else
       @user_id << @advertisement.user_id
     end
