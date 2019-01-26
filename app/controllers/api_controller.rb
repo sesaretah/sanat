@@ -28,7 +28,7 @@ class ApiController < ApplicationController
   def login
     if User.find_by_username(params['username']).try(:valid_password?, params[:password])
       @user = User.find_by_username(params['username'])
-      render :json => {result: 'OK', token: JWTWrapper.encode({ user_id: @user.id })}.to_json , :callback => params['callback']
+      render :json => {result: 'OK', token: JWTWrapper.encode({ user_id: @user.id }), user_id: @user.id}.to_json , :callback => params['callback']
     else
       render :json => {result: 'ERROR',  error: I18n.t(:doesnt_match) }.to_json , :callback => params['callback']
     end
