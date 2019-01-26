@@ -12,7 +12,7 @@ module Fcm
 
      @str = %q(curl -i -H 'Content-type: application/json' -H 'Authorization: key=AIzaSyAMwksNzuAgxp6Atl6XYDsCUR3fyn2itR4' -XPOST https://fcm.googleapis.com/fcm/send -d '{)
      @str = @str + %q("registration_ids":[) + @registration_ids.map(&:inspect).join(', ') + '],'
-     @str = @str + %{"notification": {"title": "#{title}","body":"#{body}"},"data": { "commentable_type" : "#{ntype}", "commentable_id" : "#{nid}"}}
+     @str = @str + %{"notification": {"sound" : "p.mp3","title": "#{title}","body":"#{body}"},"data": { "commentable_type" : "#{ntype}", "commentable_id" : "#{nid}"}}
      @str = @str + "}' &"
      #
      #puts @str
