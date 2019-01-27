@@ -14,7 +14,7 @@ class Advertisement < ActiveRecord::Base
     if !@upload.blank?
       return @upload.attachment(style)
     else
-      ActionController::Base.helpers.asset_path("#{rand(2..6)}.png", :digest => false)
+      ActionController::Base.helpers.asset_path("noimage-#{style}.png", :digest => false)
     end
   end
 
@@ -27,7 +27,7 @@ class Advertisement < ActiveRecord::Base
       end
       return @images
     else
-      return [{url: ActionController::Base.helpers.asset_path("noimage-35-#{style}.jpg", :digest => false), id: nil}]
+      return [{url: ActionController::Base.helpers.asset_path("noimage-#{style}.png", :digest => false), id: nil}]
     end
   end
 
