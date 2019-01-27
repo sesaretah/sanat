@@ -52,4 +52,18 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def update_profile(params)
+    @profile = current_user.profile
+    @profile.phone_number = params[:phone_number]
+    @profile.telegram_channel = params[:telegram_channel]
+    @profile.instagram_page = params[:instagram_page]
+    @profile.email = params[:email]
+    @profile.mobile = params[:mobile]
+    @profile.website = params[:website]
+    @profile.address = params[:address]
+    @profile.province_id = params[:province_id]
+    @profile.city = params[:city]
+    @profile.save
+  end
+
 end

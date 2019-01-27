@@ -96,15 +96,6 @@ class AdvertisementsController < ApplicationController
     end
   end
 
-  def update_profile(params)
-    @profile = current_user.profile
-    @profile.phone_number = params[:phone_number]
-    @profile.telegram_channel = params[:telegram_channel]
-    @profile.instagram_page = params[:instagram_page]
-    @profile.email = params[:email]
-    @profile.address = params[:address]
-    @profile.save
-  end
 
   def update_ad_contact(params)
     @advertisement.phone_number = params[:phone_number]

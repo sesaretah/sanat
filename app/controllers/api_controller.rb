@@ -52,7 +52,7 @@ class ApiController < ApplicationController
   def sign_up
     @user = User.new(username: params['username'], mobile: params['username'], password: params['password'], password_confirmation: params['password_confirmation'])
     if @user.save
-      @profile = Profile.create(user_id: @user.id, name: params[:name])
+      @profile = Profile.create(user_id: @user.id, name: params[:name], province_id: params[:province_id])
       render :json => {result: 'OK', token: JWTWrapper.encode({ user_id: @user.id })}.to_json, :callback => params['callback']
     else
       render :json => {result: 'ERROR', error: @user.errors }.to_json , :callback => params['callback']
@@ -70,12 +70,13 @@ class ApiController < ApplicationController
     else
       @owner = false
     end
-    @result = {id: @advertisement.id, title: @advertisement.title, content: @advertisement.content, phone_number: @advertisement.phone_number, city: @advertisement.city, address: @advertisement.address, email: @advertisement.email, telegram_channel: @advertisement.telegram_channel, instagram_page: @advertisement.instagram_page, website: @advertisement.website,'cover' => request.base_url + @advertisement.cover('large'), photos: @photos, owner: @owner}
+    @result = {id: @advertisement.id, title: @advertisement.title, content: @advertisement.content, phone_number: @advertisement.phone_number, city: @advertisement.city, address: @advertisement.address, email: @advertisement.email, telegram_channel: @advertisement.telegram_channel, instagram_page: @advertisement.instagram_page, website: @advertisement.website,'cover' => request.base_url + @advertisement.cover('large'), photos: @photos, owner: @owner, province: @advertisement.province.name, price: @advertisement.price, mobile: @advertisement.mobile, province_id: @advertisement.province_id}
     render :json => @result.to_json, :callback => params['callback']
   end
 
   def make_advertisement
-    @advertisement = Advertisement.create(title: params[:title], content: params[:content], user_id: current_user.id, phone_number: params[:phone_number], city: params[:city], address: params[:address], email: params[:email], telegram_channel: params[:telegram_channel], instagram_page: params[:instagram_page], website: params[:website])
+    @advertisement = Advertisement.create(title: params[:title], content: params[:content], user_id: current_user.id, phone_number: params[:phone_number], city: params[:city], address: params[:address], email: params[:email], telegram_channel: params[:telegram_channel], instagram_page: params[:instagram_page], website: params[:website], province_id: params[:province_id], price: params[:price], mobile: params[:mobile])
+    update_profile(params)
     if !params[:uploaded].blank?
       for upload_id in params[:uploaded]
         @upload = Upload.find_by_id(upload_id)
@@ -162,7 +163,11 @@ class ApiController < ApplicationController
     @advertisement.telegram_channel = params[:telegram_channel]
     @advertisement.instagram_page = params[:instagram_page]
     @advertisement.website = params[:website]
+    @advertisement.mobile = params[:mobile]
+    @advertisement.price = params[:price]
+    @advertisement.province_id = params[:province_id]
     @advertisement.save
+    update_profile(params)
     if !params[:uploaded].blank?
       for upload_id in params[:uploaded]
         @upload = Upload.find_by_id(upload_id)
