@@ -11,7 +11,7 @@ class ApiController < ApplicationController
     end
     @result = []
     for advertisement in @advertisements
-      @result << {id: advertisement.id, title: advertisement.title, content: advertisement.content ,'cover' => request.base_url + advertisement.cover('thumb')}
+      @result << {id: advertisement.id, title: advertisement.title, content: advertisement.content ,'cover' => request.base_url + advertisement.cover('medium')}
     end
     render :json => @result.to_json, :callback => params['callback']
   end
