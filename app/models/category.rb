@@ -1,4 +1,8 @@
 class Category < ActiveRecord::Base
+  require 'rgl/adjacency'
+  require 'rgl/traversal'
+  require 'rgl/dijkstra'
+
   self.primary_key = 'uuid'
   belongs_to :user
 
@@ -19,9 +23,40 @@ class Category < ActiveRecord::Base
     self.rank = 0
   end
 
+  def self.tree
+    graph = RGL::DirectedAdjacencyGraph.new
+    if Category.count > 0
+      for category in Category.all
+        if category.parent_id == nil
+          graph.add_edge '0', category.id
+        else
+          graph.add_edge category.parent_id, category.id
+        end
+      end
+      return graph.dfs_iterator.to_a
+    else
+      return []
+    end
+  end
+
+  def indention
+    graph = RGL::DirectedAdjacencyGraph.new
+    edge_weights = {}
+    for category in Category.all
+      if category.parent_id == nil
+        graph.add_edge '0', category.id
+        edge_weights[['0', category.id]] = 1
+      else
+        graph.add_edge category.parent_id, category.id
+        edge_weights[[category.parent_id, category.id]] = 1
+      end
+    end
+    return graph.dijkstra_shortest_path(edge_weights, '0', self.id).length - 2
+  end
+
 
   def set_integer_id
-    @last = Profile.all.order('integer_id desc').first
+    @last = Category.all.order('integer_id desc').first
     if !@last.blank?
       @last_id = @last.integer_id
     else

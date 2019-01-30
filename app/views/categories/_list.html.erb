@@ -1,20 +1,28 @@
 <div id='categories-list'>
-  <table class="table table-hover table-outline">
-    <%for category in Category.all%>
-    <tr>
-      <td><%= category.title%></td>
-      <td>
-        <div class="tag tag-dark" style='vertical-align: 6px;'>
-          <%= category.advertisements.count %>
-          <span class="tag-addon tag-success"><i class="far fa-flag" style="vertical-align: -3px;"></i></span>
-        </div>
-      </td>
-      <td>
-        <%= link_to "/categories/#{category.id}/destroy", remote: true, class: "icon" ,data: { confirm: 'Are you sure?' } do %>
-        <i class="fe fe-trash" style='vertical-align:-3px;'></i>
-        <%end%>
-      </td>
-    </tr>
-    <%end%>
-  </table>
+<table class="table table-hover table-outline">
+  <% for id in Category.tree%>
+  <% if id != '0'%>
+  <% @category = Category.find(id)%>
+  <tr>
+    <td>
+      <% for i in 0..@category.indention%>
+      -
+      <%end%>
+      <%= @category.title%>
+    </td>
+    <td>
+      <div class="tag tag-dark" style='vertical-align: 6px;'>
+        <%= @category.advertisements.count %>
+        <span class="tag-addon tag-success"><i class="far fa-flag" style="vertical-align: -3px;"></i></span>
+      </div>
+    </td>
+    <td>
+      <%= link_to "/categories/#{@category.id}/destroy", remote: true, class: "icon" ,data: { confirm: 'Are you sure?' } do %>
+      <i class="fe fe-trash" style='vertical-align:-3px;'></i>
+      <%end%>
+    </td>
+  </tr>
+  <%end%>
+  <%end%>
+</table>
 </div>

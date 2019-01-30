@@ -1,6 +1,6 @@
 class ApiController < ApplicationController
   skip_before_action :verify_authenticity_token
-  before_filter :authenticate_user!, :except => [:advertisements, :login, :sign_up, :advertisement, :make_advertisement, :upload, :profile, :owner, :my_advertisements, :delete_advertisement, :delete_photo, :make_pin, :unpin, :pinned, :like, :dislike, :all_unseens, :update_token, :provinces]
+  before_filter :authenticate_user!, :except => [:advertisements, :login, :sign_up, :advertisement, :make_advertisement, :upload, :profile, :owner, :my_advertisements, :delete_advertisement, :delete_photo, :make_pin, :unpin, :pinned, :like, :dislike, :all_unseens, :update_token, :provinces, :categories]
   before_action :is_admin, only: [:make_advertisement, :profile, :owner, :my_advertisements, :delete_advertisement, :delete_photo, :update_token]
 
   def advertisements
@@ -453,6 +453,15 @@ class ApiController < ApplicationController
   def provinces
     @provinces = Province.all.order('name')
     render :json => {result: 'OK', provinces: @provinces}.to_json , :callback => params['callback']
+  end
+
+  def categories
+    if !params[:parent_id].blank? && params[:parent_id] != '0'
+      @categories = Category.where(parent_id: params[:parent_id])
+    else
+      @categories = Category.where(parent_id: nil)
+    end
+    render :json => {result: 'OK', categories: @categories}.to_json , :callback => params['callback']
   end
 
 

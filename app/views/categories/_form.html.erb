@@ -2,8 +2,11 @@
   <div class="card-header">
     <%= form_tag '/categories', remote: true, method: :post do%>
     <div class="row p-0">
-      <div class="col-md-9">
+      <div class="col-md-5">
         <%= text_field_tag :title, nil , class: "form-control", placeholder: t(:title) %>
+      </div>
+      <div class="col-md-5">
+        <%= select_tag :parent_id, options_for_select(Category.all.collect { |p| [ "#{Category.find_by_uuid(p.parent_id).title rescue nil}-#{p.title}", p.id ] }), {include_blank: true, class: "form-control"} %>
       </div>
       <div class="col-md-2">
         <button type="submit" class="btn btn-secondary"><%=t :submit%></button>

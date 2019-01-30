@@ -12,11 +12,23 @@ class CategoriesController < ApplicationController
   end
 
   def create
-    @category = Category.create(title: params[:title])
+    if !params[:parent_id].blank?
+      @parent = Category.where(uuid: params[:parent_id]).first.id
+    else
+      @parent = nil
+    end
+    @category = Category.create(title: params[:title], parent_id: @parent)
   end
 
   def destroy
     @category = Category.find(params[:id])
+    if !@category.blank?
+    @advertisements = Advertisement.where(category_id: @category.id)
+    for advertisement in @advertisements
+      advertisement.category_id = nil
+      advertisement.save
+    end
+  end
     @category.destroy
   end
 
