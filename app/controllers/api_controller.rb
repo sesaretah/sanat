@@ -1,11 +1,15 @@
 class ApiController < ApplicationController
   skip_before_action :verify_authenticity_token
-  before_filter :authenticate_user!, :except => [:advertisements, :login, :sign_up, :advertisement, :make_advertisement, :upload, :profile, :owner, :my_advertisements, :delete_advertisement, :delete_photo, :make_pin, :unpin, :pinned, :like, :dislike, :all_unseens, :update_token, :provinces, :categories]
+  before_filter :authenticate_user!, :except => [:advertisements, :login, :sign_up, :advertisement, :make_advertisement, :upload, :profile, :owner, :my_advertisements, :delete_advertisement, :delete_photo, :make_pin, :unpin, :pinned, :like, :dislike, :all_unseens, :update_token, :provinces, :categories, :category]
   before_action :is_admin, only: [:make_advertisement, :profile, :owner, :my_advertisements, :delete_advertisement, :delete_photo, :update_token]
 
   def advertisements
     if params[:q].blank?
-      @advertisements = Advertisement.all.order('updated_at desc').paginate(:page => params[:page], :per_page => 10)
+      if params[:category_id].blank?
+        @advertisements = Advertisement.all.order('updated_at desc').paginate(:page => params[:page], :per_page => 10)
+      else
+        @advertisements = Advertisement.where(category_id: params[:category_id]).order('updated_at desc').paginate(:page => params[:page], :per_page => 10)
+      end
     else
       @advertisements = Advertisement.search params[:q], star: true
     end
@@ -458,10 +462,37 @@ class ApiController < ApplicationController
   def categories
     if !params[:parent_id].blank? && params[:parent_id] != '0'
       @categories = Category.where(parent_id: params[:parent_id])
+      @parent = Category.find_by_uuid(params[:parent_id])
+      if !@parent.blank? && !@parent.parent_id.blank?
+        @parent_id = @parent.parent_id
+      else
+        @parent_id = '0'
+      end
     else
       @categories = Category.where(parent_id: nil)
+      @parent_id = '0'
     end
-    render :json => {result: 'OK', categories: @categories}.to_json , :callback => params['callback']
+    @result = []
+    for category in @categories
+
+      @children = Category.where(parent_id: category.id)
+      if !@children.blank?
+        @has_child = true
+      else
+        @has_child = false
+      end
+      @result << {id: category.id, title: category.title, has_child: @has_child, parent_id: @parent_id }
+    end
+    render :json => {result: 'OK', categories: @result}.to_json , :callback => params['callback']
+  end
+
+  def category
+    @category = Category.find_by_uuid(params[:id])
+    if !@category.blank?
+      render :json => {result: 'OK', category: @category}.to_json , :callback => params['callback']
+    else
+      render :json => {error: 'ERROR' }.to_json , :callback => params['callback']
+    end
   end
 
 

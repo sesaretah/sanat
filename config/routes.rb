@@ -61,6 +61,7 @@ Rails.application.routes.draw do
   get '/api/update_token', to: "api#update_token"
   get '/api/provinces', to: "api#provinces"
   get '/api/categories', to: "api#categories"
+  get '/api/category/:id', to: "api#category"
 
 
 
