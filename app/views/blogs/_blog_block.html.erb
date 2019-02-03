@@ -1,5 +1,5 @@
 <div class="card">
-  <a href="/blogs/<%= blog.id%>"><img class="card-img-top" src="<%= blog.cover('medium')%>" alt="And this isn't my nose. This is a false one."></a>
+  <a href="/blogs/<%= blog.id%>"><img class="card-img-top" src="<%= blog.cover('medium')%>" alt="<%= blog.cover%>"></a>
   <div class="card-body d-flex flex-column">
     <h4><a href="#"><%= blog.title%></a></h4>
     <div class="d-flex align-items-center pt-5 mt-auto">
