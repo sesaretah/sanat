@@ -74,7 +74,12 @@ class ApiController < ApplicationController
     else
       @owner = false
     end
-    @result = {id: @advertisement.id, title: @advertisement.title, content: @advertisement.content, phone_number: @advertisement.phone_number, city: @advertisement.city, address: @advertisement.address, email: @advertisement.email, telegram_channel: @advertisement.telegram_channel, instagram_page: @advertisement.instagram_page, website: @advertisement.website,'cover' => request.base_url + @advertisement.cover('large'), photos: @photos, owner: @owner, province: @advertisement.province.name, price: @advertisement.price, mobile: @advertisement.mobile, province_id: @advertisement.province_id}
+    if !@advertisement.province.blank?
+      @province = @advertisement.province.name
+    else
+      @province = ''
+    end
+    @result = {id: @advertisement.id, title: @advertisement.title, content: @advertisement.content, phone_number: @advertisement.phone_number, city: @advertisement.city, address: @advertisement.address, email: @advertisement.email, telegram_channel: @advertisement.telegram_channel, instagram_page: @advertisement.instagram_page, website: @advertisement.website,'cover' => request.base_url + @advertisement.cover('large'), photos: @photos, owner: @owner, province: @province, price: @advertisement.price, mobile: @advertisement.mobile, province_id: @advertisement.province_id}
     render :json => @result.to_json, :callback => params['callback']
   end
 
