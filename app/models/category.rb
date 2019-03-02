@@ -39,6 +39,20 @@ class Category < ActiveRecord::Base
     end
   end
 
+  def parents
+    @parents = []
+    p = self
+    @parents << p
+    while p.parent_id != nil do
+      @category = Category.find_by_uuid(p.parent_id)
+      if !@category.blank?
+        @parents << @category
+        p = @category
+      end
+    end
+    return @parents
+  end
+
   def indention
     graph = RGL::DirectedAdjacencyGraph.new
     edge_weights = {}

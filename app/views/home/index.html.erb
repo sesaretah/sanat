@@ -1,28 +1,36 @@
 <div class="row">
-  <div class="col-md-2">
+  <div class="col-md-3">
     <h5><%=t :categories%></h5>
     <hr class="mt-2 mb-3"/>
     <div class="card">
-    <table class="table card-table table-vcenter">
-      <tbody>
-        <tr><td class="small p-2"><i class="fe fe-chevron-left" style="vertical-align: -3px;"></i><%= link_to t(:all), "/"%></td></tr>
-        <% for category in @categories%>
-        <tr><td class="small p-2"><i class="fe fe-chevron-left" style="vertical-align: -3px;"></i><%= link_to category.title, "?category_id=#{category.id}"%></td></tr>
-        <%end%>
-      </tbody>
-    </table>
-  </div>
+      <table class="table card-table table-vcenter">
+        <tbody>
+          <tr><td class="small p-2"><i class="fe fe-chevron-left" style="vertical-align: -3px;"></i><%= link_to t(:all), "/"%></td></tr>
+          <% for category in @categories%>
+          <tr><td class="small p-2"><i class="fe fe-chevron-left" style="vertical-align: -3px;"></i><%= link_to category.title, "?category_id=#{category.id}"%></td></tr>
+          <%end%>
+        </tbody>
+      </table>
+    </div>
   </div>
 
-<div class="col-md-10">
-  <h5><%=t :advertisements%></h5>
-  <hr class="mt-2 mb-3"/>
-  <div class="row row-cards row-deck">
-    <% for advertisement in @advertisements%>
-    <div class="col-sm-3 col-xl-3">
-      <%= render partial: 'advertisements/advertisement_block', locals: {advertisement: advertisement}%>
+  <div class="col-md-9">
+    
+    <% if !params[:category_id].blank?%>
+    <div class="alert alert-secondary" role="alert">
+      <% for category in Category.find(params[:category_id]).parents.reverse%>
+      <%= link_to category.title, "?category_id=#{category.id}"%> <i class="fe fe-chevron-left" style="vertical-align: -3px;"></i>
+      <%end%>
     </div>
     <%end%>
+    <h5><%=t :advertisements%></h5>
+    <hr class="mt-2 mb-3"/>
+    <div class="row row-cards row-deck">
+      <% for advertisement in @advertisements%>
+      <div class="col-sm-3 col-xl-3">
+        <%= render partial: 'advertisements/advertisement_block', locals: {advertisement: advertisement}%>
+      </div>
+      <%end%>
+    </div>
   </div>
-</div>
 </div>
