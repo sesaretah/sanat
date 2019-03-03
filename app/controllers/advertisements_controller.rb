@@ -82,6 +82,7 @@ class AdvertisementsController < ApplicationController
     @advertisement.size = 1
     @advertisement.status = 0
     @advertisement.user_id = current_user.id
+    set_category
     update_ad_contact(params)
     respond_to do |format|
       if @advertisement.save
@@ -105,6 +106,8 @@ class AdvertisementsController < ApplicationController
     @advertisement.address = params[:address]
     @advertisement.website = params[:website]
     @advertisement.city = params[:city]
+    @advertisement.province_id = params[:province_id]
+    @advertisement.mobile = params[:mobile]
   end
 
   # PATCH/PUT /advertisements/1
@@ -113,6 +116,7 @@ class AdvertisementsController < ApplicationController
     if !owner(@advertisement, current_user)
       head(403)
     end
+    set_category
     update_ad_contact(params)
     respond_to do |format|
       if @advertisement.update(advertisement_params)
@@ -140,6 +144,11 @@ class AdvertisementsController < ApplicationController
       format.json { head :no_content }
       format.js
     end
+  end
+
+  def set_category
+    @category = Category.find_by_uuid(params[:subsubcategory])
+    @advertisement.category_id = @category.id
   end
 
 

@@ -21,6 +21,7 @@ Rails.application.routes.draw do
   post '/categories', to: "categories#create"
   get '/categories/:id/destroy', to: "categories#destroy"
   get '/categories/change_rank/:id', to: "categories#change_rank"
+  get '/categories/get_children/:id', to: "categories#get_children"
 
   post '/roles', to: "roles#create"
   get '/roles/:id/destroy', to: "roles#destroy"

@@ -1,5 +1,16 @@
 class CategoriesController < ApplicationController
-  before_action :check_user, only: [:change_rank, :create, :destroy]
+  before_action :check_user, only: [:change_rank, :create, :destroy, :get_children]
+
+  def get_children
+    @category = Category.find(params[:id])
+    @categories = @category.children
+    resp = []
+    for k in @categories
+      resp << {'title' => k.title, 'id' => k.id}
+    end
+    render :json => resp.to_json, :callback => params['callback']
+  end
+
   def change_rank
     @category = Category.find_by_uuid(params[:id])
     if params[:move] == 'up'

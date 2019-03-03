@@ -1,10 +1,10 @@
 <div class="card">
-  <%= form_for @advertisement do |f|%>
+  <%= form_for @advertisement, html: {id: 'new_advertisement'} do |f|%>
   <div class='card-body'>
     <div class="row">
       <div class="col-md-5">
         <div class="form-group">
-          <%= f.label :title, class: "form-label" %>
+          <label class="form-label"><%=t :title%><span class="form-required">*</span></label>
           <%= f.text_field :title, class: "form-control"%>
         </div>
       </div>
@@ -13,107 +13,245 @@
     <div class="row">
       <div class="col-md-12">
         <div class="form-group">
-          <%= f.label :content, class: "form-label" %>
+          <label class="form-label"><%=t :content%><span class="form-required">*</span></label>
           <%= f.text_area :content, class: "form-control"%>
         </div>
       </div>
     </div>
 
     <div class="row">
-      <div class="col-md-3 mt-2">
+      <div class="col-md-4">
         <div class="form-group">
-          <label class="form-label"><%=t :advertisement_category%></label>
-          <%= f.select(:category_id, options_for_select(Category.all.collect { |p| [ p.title, p.id ] }, @advertisement.category_id), {},{class: "form-control"}) %>
+          <%= f.label :category_id, class: "form-label" %>
+          <% if @advertisement.category.blank?%>
+          <%= select_tag "category", options_for_select(Category.where(parent_id: nil).order(:title).collect { |p| [ p.title, p.id ] }) , { :class => "form-control"}%>
+          <%else%>
+          <%= select_tag "category", options_for_select(Category.where(parent_id: nil).order(:title).collect { |p| [ p.title, p.id ] }, @advertisement.category.parents.last.id) , { :class => "form-control"}%>
+          <%end%>
         </div>
       </div>
     </div>
 
-    <% if @upload_ids.blank?%>
-      <%= hidden_field_tag :attachments, ''%>
-      <%else%>
-      <%= hidden_field_tag :attachments, @upload_ids.split(',')%>
-      <%end%>
-
-      <div class="row">
-        <div class="col-md-4">
-          <div class="form-group">
-            <label class="form-label"><%=t :phone_number%></label>
-            <div class="input-group">
-              <span class="input-group-prepend" id="basic-addon1">
-                <span class="input-group-text"><i class="fa fa-phone" aria-hidden="true"></i></span>
-              </span>
-              <%= text_field_tag :phone_number,   current_user.profile.phone_number, class: "form-control", placeholder: "", style: 'direction: ltr;' %>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="col-md-4">
-          <div class="form-group">
-            <label class="form-label"><%=t :telegram_channel%></label>
-            <div class="input-group">
-              <span class="input-group-prepend" id="basic-addon1">
-                <span class="input-group-text"><i class="fab fa-telegram" aria-hidden="true"></i></span>
-              </span>
-              <%= text_field_tag :telegram_channel, current_user.profile.telegram_channel , class: "form-control", placeholder: "" , style: 'direction: ltr;'%>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-4">
-          <div class="form-group">
-            <label class="form-label"><%=t :instagram_page%></label>
-            <div class="input-group">
-              <span class="input-group-prepend" id="basic-addon1">
-                <span class="input-group-text"><i class="fab fa-instagram" aria-hidden="true"></i></span>
-              </span>
-              <%= text_field_tag :instagram_page, current_user.profile.instagram_page , class: "form-control", placeholder: "", style: 'direction: ltr;' %>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-4">
-          <div class="form-group">
-            <label class="form-label"><%=t :email%></label>
-            <div class="input-group">
-              <span class="input-group-prepend" id="basic-addon1">
-                <span class="input-group-text">@</span>
-              </span>
-              <%= text_field_tag :email , current_user.profile.email, class: "form-control", placeholder: "", style: 'direction: ltr;' %>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-7">
-          <div class="form-group">
-            <label class="form-label"><%=t :address%></label>
-            <%= text_area_tag :address, current_user.profile.address , class: "form-control" %>
-          </div>
-        </div>
-      </div>
-
-
-      <%end%>
-
-      <div class="row">
-        <div class="col-md-12">
-          <h5 class="mt-5"><%=t :attachment_photos%> (<%=t :maximum%> 5 <%=t :photos%>)</h5>
-          <hr class="mt-2 mb-2"/>
-          <%= render partial: 'uploads/upload_form', locals: {item: @advertisement, ratio: '4/4', class_name: 'Advertisement', type:'attachment_photos', max: 5}%>
+    <div class="row">
+      <div class="col-md-4">
+        <div class="form-group">
+          <%= f.label :subcategory_id, class: "form-label" %>
+          <% if @advertisement.category.blank?%>
+          <%= select_tag "subcategory", options_for_select(Category.where(parent_id: nil).order(:title).collect { |p| [ p.title, p.id ] }) , {:class => "form-control"}%>
+          <%else%>
+          <%= select_tag "subcategory", options_for_select(Category.where(parent_id: @advertisement.category.parents.last.id).order(:title).collect { |p| [ p.title, p.id ] }, @advertisement.category.parents[-2].id) , {:class => "form-control"}%>
+          <%end%>
         </div>
       </div>
     </div>
-    <div class="card-footer text-right">
-      <button id='submit-btn' type="submit" class="btn btn-primary"><%=t :submit%></button>
+
+    <div class="row">
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="form-label"><%=t :subsubcategory_id%><span class="form-required">*</span></label>
+          <% if @advertisement.category.blank?%>
+          <%= select_tag "subsubcategory", options_for_select(Category.where(parent_id: nil).order(:title).collect { |p| [ p.title, p.id ] }) , {:class => "form-control", required: "true"}%>
+          <%else%>
+          <%= select_tag "subsubcategory", options_for_select(Category.where(parent_id: @advertisement.category.parents[-2].id).order(:title).collect { |p| [ p.title, p.id ] }, @advertisement.category.id) , {:class => "form-control", required: "true"}%>
+          <%end%>
+        </div>
+      </div>
     </div>
+
     <script>
-    $( "#submit-btn" ).click(function() {
-      console.log('clicked');
-      $( ".<%= params[:action]%>_advertisement" ).submit();
+    $('select[name="category"]').on('change', function() {
+      var category_id = $(this).val();
+      $.ajax({
+        type: "GET",
+        url: "/categories/get_children/"+category_id,
+        data: {},
+        success: function (data) {
+          var $el = $('select[name="subcategory"]');
+          $el.prop("disabled", false);
+          $el.empty();
+          $('select[name="subsubcategory"]').empty();
+          $el.append("<option></option>");
+          $.each(data, function(item) {
+            console.log(item);
+            $el.append($("<option></option>")
+            .attr("value", data[item]['id']).text(data[item]['title']));
+          });
+        },
+        error: function(){
+          console.log(data);
+        }
+      });
+    });
+
+    $('select[name="subcategory"]').on('change', function() {
+      var category_id = $(this).val();
+      $.ajax({
+        type: "GET",
+        url: "/categories/get_children/"+category_id,
+        data: {},
+        success: function (data) {
+            var $el = $('select[name="subsubcategory"]');
+            $el.prop("disabled", false);
+            $el.empty();
+            $el.append("<option></option>");
+            if (data.length > 0) {
+              $.each(data, function(item) {
+                $el.append($("<option></option>")
+                .attr("value", data[item]['id']).text(data[item]['title']));
+              });
+            }
+
+        },
+        error: function(){
+          console.log(data);
+        }
+      });
     });
     </script>
+
+
+    <% if @upload_ids.blank?%>
+    <%= hidden_field_tag :attachments, ''%>
+    <%else%>
+    <%= hidden_field_tag :attachments, @upload_ids.split(',')%>
+    <%end%>
+
+    <div class="row">
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="form-label"><%=t :mobile%></label>
+          <div class="input-group">
+            <span class="input-group-prepend" id="basic-addon1">
+              <span class="input-group-text"><i class="fa fa-tablet" aria-hidden="true"></i></span>
+            </span>
+            <%= text_field_tag :mobile,   current_user.profile.mobile, class: "form-control", placeholder: "", style: 'direction: ltr;' %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="form-label"><%=t :phone_number%></label>
+          <div class="input-group">
+            <span class="input-group-prepend" id="basic-addon1">
+              <span class="input-group-text"><i class="fa fa-phone" aria-hidden="true"></i></span>
+            </span>
+            <%= text_field_tag :phone_number,   current_user.profile.phone_number, class: "form-control", placeholder: "", style: 'direction: ltr;' %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="form-label"><%=t :telegram_channel%></label>
+          <div class="input-group">
+            <span class="input-group-prepend" id="basic-addon1">
+              <span class="input-group-text"><i class="fab fa-telegram" aria-hidden="true"></i></span>
+            </span>
+            <%= text_field_tag :telegram_channel, current_user.profile.telegram_channel , class: "form-control", placeholder: "" , style: 'direction: ltr;'%>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="form-label"><%=t :instagram_page%></label>
+          <div class="input-group">
+            <span class="input-group-prepend" id="basic-addon1">
+              <span class="input-group-text"><i class="fab fa-instagram" aria-hidden="true"></i></span>
+            </span>
+            <%= text_field_tag :instagram_page, current_user.profile.instagram_page , class: "form-control", placeholder: "", style: 'direction: ltr;' %>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="form-label"><%=t :email%></label>
+          <div class="input-group">
+            <span class="input-group-prepend" id="basic-addon1">
+              <span class="input-group-text">@</span>
+            </span>
+            <%= text_field_tag :email , current_user.profile.email, class: "form-control", placeholder: "", style: 'direction: ltr;' %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="form-label"><%=t :website%></label>
+          <div class="input-group">
+            <span class="input-group-prepend" id="basic-addon1">
+              <span class="input-group-text"><i class="fa fa-globe" aria-hidden="true"></i></span>
+            </span>
+            <%= text_field_tag :website,   current_user.profile.website, class: "form-control", placeholder: "", style: 'direction: ltr;' %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="form-label"><%=t :province%><span class="form-required">*</span></label>
+          <%= select_tag :province_id, options_for_select(Province.all.order(:name).collect { |p| [ p.name, p.id ] }, @advertisement.province_id), {:class => "form-control", required: "true"}%>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="form-label"><%=t :city%><span class="form-required">*</span></label>
+          <%= f.text_field :city, class: "form-control"%>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-7">
+        <div class="form-group">
+          <label class="form-label"><%=t :address%></label>
+          <%= text_area_tag :address, current_user.profile.address , class: "form-control" %>
+        </div>
+      </div>
+    </div>
+
+
+    <%end%>
+
+    <div class="row">
+      <div class="col-md-12">
+        <h5 class="mt-5"><%=t :attachment_photos%> (<%=t :maximum%> 5 <%=t :photos%>)</h5>
+        <hr class="mt-2 mb-2"/>
+        <%= render partial: 'uploads/upload_form', locals: {item: @advertisement, ratio: '4/4', class_name: 'Advertisement', type:'attachment_photos', max: 5}%>
+      </div>
+    </div>
   </div>
+  <div class="card-footer text-right">
+    <button id='submit-btn' type="submit" class="btn btn-primary"><%=t :submit%></button>
+  </div>
+  <script>
+  $("#submit-btn").on('click', function(event) {
+    var form = $("#new_advertisement");
+    console.log(form[0].checkValidity());
+    if (form[0].checkValidity() === false) {
+      event.preventDefault()
+      event.stopPropagation()
+      alert('<%=t :fill_in_red_fields%>');
+      form.addClass('was-validated');
+    } else {
+      $( "#new_advertisement" ).submit();
+    }
+
+  });
+  </script>
+</div>

@@ -240,6 +240,9 @@ fa:
         advertisement:
             title: 'موضوع آگهی'
             content: 'متن آگهی'
+            category_id:  'دسته بندی کل'
+            subcategory_id: 'زیر دسته'
+            subsubcategory_id: 'دسته بندی محصول یا  خدمات '
         faq:
           question: 'پرسش'
           answer: 'پاسخ '
@@ -260,6 +263,13 @@ fa:
     page_gap: "&hellip;"
     previous_label: "قبلی"
     next_label: "بعدی"
+  province: 'استان '
+  mobile: 'تلفن همراه '
+  website: 'وبسایت '
+  advertisement: 'آگهی'
+  fill_in_red_fields: 'لطفا جعبه های قرمز را پر کنید'
+  subsubcategory_id: 'دسته بندی محصول یا  خدمات '
+  content: 'متن آگهی '
   provinces: 'استان ها'
   doesnt_match: 'شماره موبایل و رمز هم خوان نیست '
   phone_number: 'شماره تلفن'

@@ -1,62 +1,139 @@
-<div class="card">
-  <div class='card-header'>
-    <%= sanitize @advertisement.title%>
-    <div class='card-options'>
-      <label class="custom-switch ml-2 mt-1" style='float: left;'>
-        <input type="checkbox" name="view_<%=@advertisement.id%>" id='view_<%= @advertisement.id%>' <%if @advertisement.view_in_homepage%>checked<%end%> class="custom-switch-input">
-        <span class="custom-switch-indicator"></span>
-        <span class="custom-switch-description" style='font-size: 80%;'><%=t :view_in_the_first_page%></span>
-      </label>
-      <script>
-      $('.custom-switch-input').change(function() {
-        var id = $(this).attr('id').split("_")[1];
-        if($(this).is(":checked")) {
-          $.ajax({
-            url: '/advertisements/check/'+id,
-            type: 'GET',
-            dataType: 'json',
-            data: {
-              segment_id: id,
-              to: 'check'
-            },
-            error: function() {
-              $(this).attr("checked", false);
-            },
-            success: function(res) {
-              $(this).attr("checked", true);
-            }
-          });
-        } else {
-          $.ajax({
-            url: '/advertisements/check/'+id,
-            type: 'GET',
-            dataType: 'json',
-            data: {
-              segment_id: id,
-              to: 'uncheck'
-            },
-            error: function() {
-              $(this).attr("checked", true);
-            },
-            success: function(res) {
-              $(this).attr("checked", false);
-            }
-          });
-        }
-      });
-      </script>
-      <a href="/advertisements/<%=@advertisement.uuid%>/edit" class='btn btn-secondary'><i class="fe fe-edit" style="vertical-align:-3px;"></i> <%=t :edit%></a>
-      <%= link_to @advertisement, method: :delete, class: "btn btn-secondary" ,data: { confirm: t(:are_you_sure) } do %>
-      <i class="dropdown-icon fe fe-trash"></i> <%=t :destroy%>
-      <%end%>
-    </div>
-  </div>
-  <div class='card-body'>
-    <div id="trix-content">
-      <%= sanitize @advertisement.content%>
-    </div>
-    <% for photo in @advertisement.photos('large')%>
-    <p><%= image_tag photo[:url]%></p>
+<div class="row">
+  <div class="col-md-12">
+  <div class="alert alert-secondary" role="alert">
+    <% for category in @advertisement.category.parents.reverse%>
+    <%= link_to category.title, "/?category_id=#{category.id}"%> <i class="fe fe-chevron-left" style="vertical-align: -3px;"></i>
     <%end%>
   </div>
+</div>
+</div>
+<div class="row">
+  <div class="col-md-6">
+
+    <div class="card">
+      <div class='card-header'>
+        <%=t :advertisement%>
+        <div class='card-options'>
+          <label class="custom-switch ml-2 mt-1" style='float: left;'>
+            <input type="checkbox" name="view_<%=@advertisement.id%>" id='view_<%= @advertisement.id%>' <%if @advertisement.view_in_homepage%>checked<%end%> class="custom-switch-input">
+            <span class="custom-switch-indicator"></span>
+            <span class="custom-switch-description" style='font-size: 80%;'><%=t :view_in_the_first_page%></span>
+          </label>
+          <script>
+          $('.custom-switch-input').change(function() {
+            var id = $(this).attr('id').split("_")[1];
+            if($(this).is(":checked")) {
+              $.ajax({
+                url: '/advertisements/check/'+id,
+                type: 'GET',
+                dataType: 'json',
+                data: {
+                  segment_id: id,
+                  to: 'check'
+                },
+                error: function() {
+                  $(this).attr("checked", false);
+                },
+                success: function(res) {
+                  $(this).attr("checked", true);
+                }
+              });
+            } else {
+              $.ajax({
+                url: '/advertisements/check/'+id,
+                type: 'GET',
+                dataType: 'json',
+                data: {
+                  segment_id: id,
+                  to: 'uncheck'
+                },
+                error: function() {
+                  $(this).attr("checked", true);
+                },
+                success: function(res) {
+                  $(this).attr("checked", false);
+                }
+              });
+            }
+          });
+          </script>
+          <a href="/advertisements/<%=@advertisement.uuid%>/edit" class='btn btn-secondary'><i class="fe fe-edit" style="vertical-align:-3px;"></i> <%=t :edit%></a>
+          <%= link_to @advertisement, method: :delete, class: "btn btn-secondary" ,data: { confirm: t(:are_you_sure) } do %>
+          <i class="dropdown-icon fe fe-trash"></i> <%=t :destroy%>
+          <%end%>
+        </div>
+      </div>
+      <div class='card-body'>
+        <h5><%= sanitize @advertisement.title%></h5>
+        <div id="trix-content">
+          <%= sanitize @advertisement.content%>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="table-responsive">
+        <table class="table card-table table-striped table-vcenter">
+          <tbody>
+            <tr>
+              <td><%=t :province%></td>
+              <td><%= @advertisement.province.name rescue nil%></td>
+            </tr>
+            <tr>
+              <td><%=t :city%></td>
+              <td><%= @advertisement.city%></td>
+            </tr>
+            <tr>
+              <td><%=t :phone_number%></td>
+              <td><%= @advertisement.phone_number%></td>
+            </tr>
+            <tr>
+              <td><%=t :mobile%></td>
+              <td><%= @advertisement.mobile%></td>
+            </tr>
+            <tr>
+              <td><%=t :telegram_channel%></td>
+              <td style="direction:ltr"><%= @advertisement.telegram_channel%></td>
+            </tr>
+            <tr>
+              <td><%=t :instagram_page%></td>
+              <td style="direction:ltr"><%= @advertisement.instagram_page%></td>
+            </tr>
+            <tr>
+              <td><%=t :website%></td>
+              <td style="direction:ltr"><%= @advertisement.website%></td>
+            </tr>
+            <tr>
+              <td><%=t :address%></td>
+              <td><%= @advertisement.address%></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="card">
+      <div id="carousel-tour" class="carousel slide" data-ride="carousel">
+        <% @uploads = Upload.where(uploadable_type: 'Advertisement', uploadable_id: @advertisement.id, attachment_type: 'attachment_photos')%>
+        <ol class="carousel-indicators">
+          <%@i = 0%>
+          <% for upload in @uploads%>
+          <li data-target="#carousel-tour" data-slide-to="<%=@i%>" class="<% if upload.id == @uploads.first.id%>active<%end%>"></li>
+          <% @i += 1%>
+          <%end%>
+        </ol>
+        <div class="carousel-inner">
+
+          <% for upload in @uploads%>
+          <div class="carousel-item <% if upload.id == @uploads.first.id%>active<%end%>">
+            <img class="d-block w-100" alt="" src="<%= upload.attachment(:medium)%>" data-holder-rendered="true">
+          </div>
+          <%end%>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+
 </div>

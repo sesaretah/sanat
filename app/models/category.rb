@@ -53,6 +53,11 @@ class Category < ActiveRecord::Base
     return @parents
   end
 
+  def children
+    @categories = Category.where(parent_id: self.uuid)
+    return @categories
+  end
+
   def indention
     graph = RGL::DirectedAdjacencyGraph.new
     edge_weights = {}
