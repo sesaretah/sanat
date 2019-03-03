@@ -1,12 +1,14 @@
+<% if !@advertisement.category.blank?%>
 <div class="row">
   <div class="col-md-12">
   <div class="alert alert-secondary" role="alert">
-    <% for category in @advertisement.category.parents.reverse%>
+    <% for category in @advertisement.category.parents.reverse %>
     <%= link_to category.title, "/?category_id=#{category.id}"%> <i class="fe fe-chevron-left" style="vertical-align: -3px;"></i>
     <%end%>
   </div>
 </div>
 </div>
+<% end%>
 <div class="row">
   <div class="col-md-6">
 
